@@ -11,17 +11,17 @@ sys.stdin = open('./public_input.txt', 'r')
 '''
 
 # 2072. 홀수만 더하기
-# tc = int(input())
+tc = int(input())
 
-# for t in range(tc):
-#   num_list = list(map(int, input().split()))
-#   answer = 0
+for t in range(tc):
+  num_list = list(map(int, input().split()))
+  answer = 0
 
-#   for i in num_list:
-#     if i%2 == 1:
-#       answer += i
+  for i in num_list:
+    if i%2 == 1:
+      answer += i
 
-#   print('#{} {}'.format(t, answer))
+  print('#{} {}'.format(t, answer))
 
 # ----------------------------------------------------------------------
 
@@ -120,5 +120,3 @@ sys.stdin = open('./public_input.txt', 'r')
 # 2047. 신문 헤드라인
 # newsPaper = input()
 # print(newsPaper.upper())
-
-

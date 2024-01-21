@@ -139,7 +139,125 @@ sys.stdin = open('./public_input.txt', 'r')
 # ----------------------------------------------------------------------
 
 # 1974. 스도쿠 검증
+# 접근방법
+# 총 9*9 가로, 열 중복 검사
+# 3*3 검사
+# tc = int(input())
+# for t in range(1, tc+1):
+# 	sudoku = [list(map(int, input().split())) for _ in range(9)]
+# 	answer = 1
+# 	for i in range(9):
+# 		row = set(sudoku[i])  # 가로 중복 검사
+# 		col = set()			  # 세로 중복 검사
+# 		for j in range(9):
+# 			col.add(sudoku[j][i])
+			
+# 		if len(row) != 9 or len(col) != 9:
+# 			answer = 0
 
+# 		# 3*3 중복 검사
+# 		if i in [0, 3, 6]:
+# 			n = 0
+# 			for _ in range(3):
+# 				blockThree = set()
+# 				for k in range(i, i+3):
+# 					for l in range(n, n+3):
+# 						blockThree.add(sudoku[k][l])
+				
+# 				if len(blockThree) != 9:
+# 					answer = 0
+# 					break
+# 				n += 3
 
+# 		if answer == 0:
+# 			answer = 0
+# 			break
+# 	print('#{} {}'.format(t, answer))
+	
+# ----------------------------------------------------------------------
+
+# 2007. 패턴 마디의 길이
+# 접근방법
+# 1. 핵심 로직  >  s[:i] == s[i:i*2]
+# 2. (s[:1], s[1:2]) (s[:2], s[2:4]) ...
+# tc = int(input())
+# for t in range(1, tc+1):
+# 	s = input()
+# 	pattern = ''
+# 	for i in range(1, len(s)):
+# 		if s[:i] == s[i:i*2]:
+# 			pattern = ''.join(s[:i])
+# 			break
+	
+# 	print('#{} {}'.format(t, len(pattern)))	
 
 # ----------------------------------------------------------------------
+
+# 2005. 파스칼의 삼각형  >  재시도
+# 접근방법
+
+# tk = int(input())
+# for t in range(1, tk+1):
+# 	n = int(input())
+# 	arr = [[0]*n for _  in range(n)]
+# 	for i in range(n):
+# 		for j in range(i+1): 
+# 			if j == 0 or j == i:
+# 				arr[i][j] = 1
+# 			else:
+# 				arr[i][j] += arr[i-1][j-1] + arr[i-1][j]
+# 	print(arr)
+# ----------------------------------------------------------------------
+
+# 1284. 수도 요금 경쟁
+# tc = int(input())
+# for t in range(1, tc+1):
+# 	P, Q, R, S, W = map(int, input().split())
+	
+# 	a = P * W  # A사 요금
+
+# 	if W <= R:
+# 		b = Q
+# 	else:
+# 		b = Q + S * (W - R) 
+	
+# 	print('#{} {}'.format(t, min(a, b)))
+
+# ----------------------------------------------------------------------
+
+# 1979. 어디에 단어가 들어갈 수 있을까  >  재시도
+# 접근방법
+# 1. n*n 행렬에 가로와 세로에 k길이만큼만 있는지 확인
+# 2. range(n-2)로 2중 for문
+# 2. 맞다면 cnt + 1
+
+# tc = int(input())
+# for t in range(1, tc+1):
+# 	n, k = map(int, input().split())
+# 	puzzle = [list(map(int, input().split())) for _  in range(n)]
+# 	answer = 0
+# 	for i in range(n):
+# 		row, col = 0, 0
+# 		for j in range(n):
+# 			# 가로 체크
+# 			if puzzle[i][j] == 0:
+# 				if row == k:
+# 					answer += 1
+# 				row = 0
+# 			else:
+# 				row += 1
+			
+# 			# 세로 체크
+# 			if puzzle[j][i] == 0:
+# 				if col == k:
+# 					answer += 1
+# 				col = 0
+# 			else:
+# 				col += 1
+# 		# 한번 더 체크
+# 		if row == k:
+# 			answer += 1
+# 		if col == k:
+# 			answer += 1
+
+# 	print('#{} {}'.format(t, answer))

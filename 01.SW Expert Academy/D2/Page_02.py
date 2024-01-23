@@ -86,31 +86,31 @@ sys.stdin = open('./public_input.txt', 'r')
 # 2. 총점 계산 후 딕셔너리 두번째 인덱스(value) 값으로 정렬 (key값은 정렬되지 않음)
 # 3. 총점수리스트의 첫번째인덱스번호(정렬되지 않은 학생등수)가 k번째와 같다면 value 출력
 
-tc = int(input())
-for t in range(1, tc+1):
-    n, k = map(int, input().split())
-    score = [list(map(int, input().split())) for _ in range(n)]
-    defalutGrade = ['A+', 'A0', 'A-', 'B+', 'B0', 'B-', 'C+', 'C0', 'C-', 'D0']
-    grade = list()
+# tc = int(input())
+# for t in range(1, tc+1):
+#     n, k = map(int, input().split())
+#     score = [list(map(int, input().split())) for _ in range(n)]
+#     defalutGrade = ['A+', 'A0', 'A-', 'B+', 'B0', 'B-', 'C+', 'C0', 'C-', 'D0']
+#     grade = list()
 
-    for i in defalutGrade:
-        for _ in range(n//10):  # 총 학생수만큼 학점 부여해야되므로
-            grade.append(i)
+#     for i in defalutGrade:
+#         for _ in range(n//10):  # 총 학생수만큼 학점 부여해야되므로
+#             grade.append(i)
     
-    sequence = dict()  # 학생 총점수 높은순서대로
+#     sequence = dict()  # 학생 총점수 높은순서대로
     
-    for i in range(len(score)):
-        mid, final, assignment = score[i]
-        sequence[i+1] = mid*0.35 + final*0.45 + assignment*0.2
+#     for i in range(len(score)):
+#         mid, final, assignment = score[i]
+#         sequence[i+1] = mid*0.35 + final*0.45 + assignment*0.2
 
-    sequence = sorted(sequence.items(), key=lambda x:x[1], reverse=True)  # 총 점수별로 정렬
+#     sequence = sorted(sequence.items(), key=lambda x:x[1], reverse=True)  # 총 점수별로 정렬
 
-    for i in range(len(sequence)):
-        rank, totalScore = sequence[i]
-        if rank == k:
-            answer = grade[i]
-            break
-    print('#{} {}'.format(t, answer))
+#     for i in range(len(sequence)):
+#         rank, totalScore = sequence[i]
+#         if rank == k:
+#             answer = grade[i]
+#             break
+#     print('#{} {}'.format(t, answer))
 
 # ----------------------------------------------------------------------
     
@@ -119,4 +119,77 @@ for t in range(1, tc+1):
 # ----------------------------------------------------------------------
 
 # 1959.두 개의 숫자열
+# 접근방법
+# 1. 두 개의 숫자열 길이의 절댓값만큼 첫번째 반복
+# 2. 길이가 더 짧은 숫자열만큼 j번, 긴 숫자열은 i+j번 두번째 반복한다.
+# tc = int(input())
+# for t in range(1, tc+1):
+#     n, m = map(int, input().split())
+#     a = list(map(int, input().split()))
+#     b = list(map(int, input().split()))
+#     answer = 0
 
+#     for i in range(abs(n - m)+1):
+#         tmp = 0
+#         for j in range(min(n, m)):
+#             if n <= m:
+#                 tmp += (a[j] * b[i+j])
+#             else:
+#                 tmp += (a[i+j] * b[j])
+#         answer = max(answer, tmp)
+    
+#     print('#{} {}'.format(t, answer))
+
+# ----------------------------------------------------------------------
+
+# 1288. 새로운 불면증 치료법
+# 단순구현
+# tc = int(input())
+# for t in range(1, tc+1):
+#     n = int(input())
+#     nn = n
+#     check = list()
+#     while len(check) != 10:
+#         tmp = list(str(nn))
+#         for i in tmp:
+#             if i not in check:
+#                 check.append(i)
+#         nn = nn + n
+#     print('#{} {}'.format(t, nn-n))
+    
+# ----------------------------------------------------------------------
+
+# 1945.간단한 소인수분해
+# 단순 구현
+# tc = int(input())
+# div = [2, 3, 5, 7, 11]
+# for t in range(1, tc+1):
+#     n = int(input())
+#     answer = list()
+    
+#     for i in div:
+#         cnt = 0
+#         while (n % i) == 0:
+#             cnt += 1
+#             n = n // i
+#         answer.append(cnt)
+
+#     print('#{} {}'.format(t, ' '.join(map(str, answer))))
+    
+# ----------------------------------------------------------------------
+
+# 1970. 쉬운 거스름돈
+# 단순 구현
+# tc = int(input())
+# for t in range(1, tc+1):
+#     n = int(input())
+#     moneyKind = [50000, 10000, 5000, 1000, 500, 100, 50, 10]
+#     answer = list()
+
+#     for x in moneyKind:
+#         cnt = 0
+#         if x <= n:
+#             cnt = n//x
+#             n -= (x * cnt)
+#         answer.append(str(cnt))
+#     print('#{}\n{}'.format(t, ' '.join(answer)))

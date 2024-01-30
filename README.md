@@ -1,6 +1,6 @@
 ## Programmers
 
-- **SQL  >  VSCode GIT CLI/SourceTree**
+- **SQL &nbsp;> &nbsp;VSCode GIT CLI/SourceTree**
   -   SELECT
   -   SUM,MAX,MIN
   -   GROUP BY
@@ -8,13 +8,13 @@
   -   JOIN
   -   STRING, DATE
  
-- **Algorithm  >  백준 허브 플러그인**
+- **Algorithm &nbsp;> &nbsp;BaekJoon Hub Plugin**
   - **Lv.01 풀이 중**
   
 ## SW Expert Academy ( D1 ~ D3 )
-
+**All Problems VSCode GIT CLI/SourceTree**
 -   D1 Finish
--   **D2  >  재시도 문제 풀이 예정**
+-   **D2 &nbsp;> &nbsp;재시도 문제 풀이 예정**
 
 ## BaekJoon
 - **풀이 예정**

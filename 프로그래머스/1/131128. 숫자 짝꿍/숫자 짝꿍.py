@@ -8,13 +8,16 @@ def solution(X, Y):
     
     for k in range(9, -1, -1):
         minCnt = min(dictX[k], dictY[k])
-        if answer == '' and k == 0 and minCnt > 0:
-            answer = '0'
-            break
+        # if answer == '' and k == 0 and minCnt > 0:
+        #     answer = '0'
+        #     break
             
         answer += (str(k) * minCnt)
     
     if not answer:
         answer = '-1'
+    
+    if len(answer) == answer.count('0'):
+        answer = '0'
         
     return answer

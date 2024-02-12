@@ -1,9 +1,9 @@
 def check(a, b, c, d):
     if a < b:
-        tmp = d
+        res = d
     else:
-        tmp = c
-    return tmp
+        res = c
+    return res
 
 def solution(survey, choices):
     answer = ''
@@ -29,9 +29,14 @@ def solution(survey, choices):
             if choice == 5:
                 indicators[back] += 1
     
-    answer += check(indicators['R'], indicators['T'], 'R', 'T')
-    answer += check(indicators['C'], indicators['F'], 'C', 'F')
-    answer += check(indicators['J'], indicators['M'], 'J', 'M')
-    answer += check(indicators['A'], indicators['N'], 'A', 'N')
+    idx, tmp = 0, list()
+    for k, v in indicators.items():
+        idx += 1
+        if (idx % 2) == 0:
+            tmp += [k, v]
+            answer += check(tmp[1], tmp[3], tmp[0], tmp[2])
+            tmp = list()
+        else:
+            tmp += [k, v]
     
     return answer

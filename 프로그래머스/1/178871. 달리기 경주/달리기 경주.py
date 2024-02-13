@@ -11,11 +11,11 @@ def solution(players, callings):
         pos[rank[call]] = pos[rank[call]-1]
         backIdx = pos[rank[call]-1]  # 따라잡는 선수이름
         
-        pos[rank[call]-1] = tmp
+        pos[rank[call]-1] = tmp      # 선수변경
         
         # print(pos, frontIdx, backIdx)
-        rank[frontIdx] -= 1
-        rank[backIdx] += 1
+        rank[frontIdx] -= 1          # 등수변경
+        rank[backIdx] += 1           # 등수변경
     # print(rank, pos)
     answer = pos
     

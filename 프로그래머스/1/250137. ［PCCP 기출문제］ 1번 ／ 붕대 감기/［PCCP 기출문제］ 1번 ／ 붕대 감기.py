@@ -11,13 +11,13 @@ def solution(bandage, health, attacks):  # 붕대감기기술정보, 최대체�
     useTime, secRecover, addRecover = bandage  # 시전 시간, 초당 회복량, 추가회복량
     attackTime, damage = attacks.pop(0)        # 첫번째 공격패턴 꺼내기
     
-    # print(bandage, health, attacks, lastAttack, attackTime, damage)
+    # print(bandage, health, attacks, lastAttack, attackTime, damage) # 검증
     
     for i in range(lastAttack+1):
-        if i == attackTime:   # 현재 시간이 몬스터 공격시간과 같다면
+        if i == attackTime:   # 현재 시간이 몬스터 공격시간과 같다면 공격 받음
             health -= damage  # 피해량만큼 현재체력감소
             success = 0       # 성공횟수 초기화
-            # print('----', attackTime, damage)
+            # print('----', attackTime, damage) # 검증
             if attacks:
                 attackTime, damage = attacks.pop(0)  # 다음 공격패턴
         else:  # 공격을 받지 않으면
@@ -36,12 +36,10 @@ def solution(bandage, health, attacks):  # 붕대감기기술정보, 최대체�
                 if health > maxHealth:  # 현재체력이 최대체력보다 크면 최대체력 대입
                     health = maxHealth
         
-        # print(i, health, success)
+        # print(i, health, success)  # 검증
 
     answer = health
     if health <= 0:
         answer = -1        
-    
-    print(answer)
     
     return answer

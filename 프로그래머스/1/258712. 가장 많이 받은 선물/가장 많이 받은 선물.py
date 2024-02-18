@@ -1,4 +1,8 @@
-from pprint import pprint
+'''
+    https://velog.io/@oxboxx/%EA%B0%80%EC%9E%A5-%EB%A7%8E%EC%9D%B4-%EB%B0%9B%EC%9D%80-%EC%84%A0%EB%AC%BC-Python
+        from collections import defaultdict  ->  라이브러리 사용 풀이
+'''
+from pprint import pprint  # pprint(pretty print) : 중첩된 딕셔너리(json 유사), 리스트등의 데이터타입 구조를 줄바꿈 처리해서 한눈에 파악하기 쉽게 출력해주는 모듈
 def solution(friends, gifts):
     giveCnt = { friend:0 for friend in friends }     # 준 횟수
     receiveCnt = { friend:0 for friend in friends }  # 받은 회수

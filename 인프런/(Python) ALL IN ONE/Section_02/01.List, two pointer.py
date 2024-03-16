@@ -1,5 +1,5 @@
 import sys
-sys.stdin = open('input.txt', 'r')
+sys.stdin = open('(Python) ALL In ONE/input.txt', 'r', encoding='utf-8')
 
 '''
 Array list (Array, Dynamic array)

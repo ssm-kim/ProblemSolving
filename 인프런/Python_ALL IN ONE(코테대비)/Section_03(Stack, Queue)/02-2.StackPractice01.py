@@ -10,6 +10,8 @@
   Output : false, false, true, false, true
 '''
 
+# 재풀이
+
 def isValid(s):
     stack = []
     for i in s:

@@ -13,14 +13,33 @@
   Output :    [1, 1, 4, 2, 1, 1, 0, 0]          [1, 1, 1, 0]      [1, 1, 0]
 '''
 
+# 재풀이
 def daliyTemperatures(temperatures):
-    ans = [0] * len(temperatures)
-    stack = []
+    answer = [0] * len(temperatures)
+    stack = list()
     for cur_day, cur_temp in enumerate(temperatures):
         while stack and stack[-1][1] < cur_temp:
             prev_day, _ = stack.pop()
-            ans[prev_day] = cur_day - prev_day
+            answer[prev_day] = cur_day - prev_day
         stack.append((cur_day, cur_temp))
-    return ans
-
+    return
 print(daliyTemperatures([73, 74, 75, 71, 69, 72, 76, 73]))
+
+
+
+
+
+
+
+
+# def daliyTemperatures(temperatures):
+#     ans = [0] * len(temperatures)
+#     stack = []
+#     for cur_day, cur_temp in enumerate(temperatures):
+#         while stack and stack[-1][1] < cur_temp:
+#             prev_day, _ = stack.pop()
+#             ans[prev_day] = cur_day - prev_day
+#         stack.append((cur_day, cur_temp))
+#     return ans
+
+# print(daliyTemperatures([73, 74, 75, 71, 69, 72, 76, 73]))

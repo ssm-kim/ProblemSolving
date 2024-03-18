@@ -9,7 +9,8 @@
   -   STRING, DATE
  
 - **Algorithm &nbsp;> &nbsp;BaekJoon Hub Plugin**
-  - **Lv.01 풀이 중**
+  - **Lv.01 풀이완료**
+  - **재풀이해야되는 문제확인**
   
 ## SW Expert Academy ( D1 ~ D3 )
 **All Problems VSCode GIT CLI/SourceTree**

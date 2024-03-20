@@ -6,23 +6,35 @@
 '''
 
 # bfs 기본 알고리즘 구현  ->  무조건 외워야 하며 queue를 사용한다.
-from collections import deque
+# from collections import deque
 
-def bfs(root):
-    visited = []
-    if root is None:
-        return 0  # []
-    q = deque()
-    q.append(root)
+# def bfs(root):
+#     visited = []
+#     if root is None:
+#         return 0  # []
+#     q = deque()
+#     q.append(root)
 
-    while q:
-        cur_node = q.popleft()
-        visited.append(cur_node.value)
+#     while q:
+#         cur_node = q.popleft()
+#         visited.append(cur_node.value)
 
-        if cur_node.left:
-            q.append(cur_node.left)
-        if cur_node.right:
-            q.append(cur_node.right)
-    return visited
+#         if cur_node.left:
+#             q.append(cur_node.left)
+#         if cur_node.right:
+#             q.append(cur_node.right)
+#     return visited
 
-bfs(root)
+# bfs(root)
+
+'''
+    Tree Traversal 2 (접근)
+        [ Left Child Node | Right Child Node ]
+        
+    Tree Traversal 3 (방문)
+        - 전위 순회 (Preorder)
+        - 중위 순회 (Inorder)
+        - 후위 순회 (Postorder)
+    
+    ※ 관련 부분 동작원리는 인프런 강의로 확인
+'''

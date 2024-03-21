@@ -5,7 +5,7 @@
           순회 방법으로는 '너비우선탐색의 BFS'와 '깊이우선탐색의 DFS'가 있다.
 '''
 
-# bfs 기본 알고리즘 구현  ->  무조건 외워야 하며 queue를 사용한다.
+# BFS 기본 알고리즘 구현  ->  무조건 외워야 하며 Queue를 사용한다.
 # from collections import deque
 
 # def bfs(root):

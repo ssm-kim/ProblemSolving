@@ -25,13 +25,38 @@ sys.stdin = open('./public_input.txt', 'r')
         4. 코드 구현
 '''
 
-# 10570. 제곱 팰린드롬 수
+# # 10570. 제곱 팰린드롬 수
 '''
-    문제 이해 및 접근방법
+     문제 이해 및 접근방법
+        - 앞으로 읽어도 뒤로 읽어도 똑같은 문자열을 팰린드롬 혹은 회문
+        - 어떠한 양의 정수 N에 대해서, N과 √N이 모두 팰린드롬이면 이 수를 제곱 팰린드롬 수
 '''
+# def palindrome(s):
+#     for i in range(len(s)//2):
+#         if s[i] != s[-1-i]:
+#             return False
+#     return True
 
 # tc = int(input())
 # for t in range(1, tc + 1):
 #     a, b = map(int, input().split())
+#     cnt = 0
+#     for i in range(a, b+1):
+#         square = int(i**(1/2))
+#         if i == (square**2):
+#             ch1 = palindrome(str(square))
+#             ch2 = palindrome(str(i))
+#             if ch1 and ch2:
+#                 cnt += 1 
+#     print('#{} {}'.format(t, cnt))
+
+# ----------------------------------------------------------------------
+
+# 1215. [S/W 문제해결 기본] 3일차 - 회문1
+'''
+     문제 이해 및 접근방법
+'''
+
+
 
 # ----------------------------------------------------------------------

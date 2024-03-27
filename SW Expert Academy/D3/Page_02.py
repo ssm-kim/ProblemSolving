@@ -102,8 +102,86 @@ sys.stdin = open('./public_input.txt', 'r')
 # 1220.[S/W 문제해결 기본] 5일차 - Magnetic
 '''
     문제 이해 및 접근방법
+        - 1은 N극 성질을 가지는 자성체를 2는 S극 성질을 가지는 자성체를 의미
+        - 자성체는 테이블 앞뒤 쪽에 있는 N극 또는 S극에만 반응하며 자성체끼리는 전혀 반응하지 않는다.
+'''
+# tc = 10
+# for t in range(1, tc+1):
+#     n = int(input())
+#     board = [list(map(int, input().split())) for _ in range(100)]
+#     cnt = 0
+#     for i in range(n):
+#         cur_state, flag  = '', True
+#         for j in range(n):
+#             if board[j][i] == 1:  # N극
+#                 if flag and cur_state == 2:
+#                     cnt += 1
+#                 else:
+#                     cur_state = 1
+#                     flag = True
+
+#             elif board[j][i] == 2:  # S극
+#                 if cur_state == 1:  # 교착상태
+#                     cnt += 1
+#                     cur_state = ''
+#                 else:
+#                     cur_state = 2
+#                     flag = False
+    
+#     print('#{} {}'.format(t, cnt))
+
+# ----------------------------------------------------------------------
+    
+# 1225. [S/W 문제해결 기본] 7일차 - 암호생성기
+'''
+    문제 이해 및 접근방법
+'''
+
+# from collections import deque
+
+# tc = 10
+# for t in range(1, tc+1):
+#     n = int(input())
+#     code = deque(map(int, input().split()))
+#     minus = 1
+#     while True:
+#         if code[-1] <= 0:
+#             code[-1] = 0
+#             break
+#         code[0] -= minus
+#         code.append(code.popleft())
+#         minus += 1
+#         if minus == 6:
+#             minus %= 5
+#    print('#{} {}'.format(t, ' '.join(map(str, code))))
+
+# ----------------------------------------------------------------------
+    
+# 13229. 일요일
+'''
+    문제 이해 및 접근방법
+'''
+# tc = int(input())
+# for t in range(1, tc+1):
+#     s = input()
+#     weekend = {'MON':1, 'TUE':2, 'WED': 3, 'THU':4, 'FRI':5, 'SAT':6, 'SUN':7}
+#     nextSunday = 7
+    
+#     nextSunday -= weekend[s]
+#     if nextSunday == 0:
+#         nextSunday = 7
+
+#     print('#{} {}'.format(t, nextSunday))
+
+# ----------------------------------------------------------------------
+
+# 5431.민석이의 과제 체크하기
+'''
+    문제 이해 및 접근방법
 '''
 tc = int(input())
 for t in range(1, tc+1):
-    n = int(input())
+    n, k = map(int, input().split())
+    assignment = list(map(int, input().split()))
+    
     break

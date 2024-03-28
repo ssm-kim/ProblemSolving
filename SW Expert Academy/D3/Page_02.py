@@ -179,9 +179,89 @@ sys.stdin = open('./public_input.txt', 'r')
 '''
     문제 이해 및 접근방법
 '''
+# tc = int(input())
+# for t in range(1, tc+1):
+#     n, k = map(int, input().split())
+#     assignment = list(map(int, input().split()))
+    
+#     print('#{}'.format(t), end=' ')
+#     for i in range(1, n+1):
+#         if i not in assignment:
+#             print(i, end=' ')
+#     print()
+
+# ----------------------------------------------------------------------
+
+# 1230. [S/W 문제해결 기본] 8일차 - 암호문3
+'''
+    문제 이해 및 접근방법      
+        1. I(삽입) x, y, s : 앞에서부터 x번째 암호문 바로 다음에 y개의 암호문을 삽입한다.
+                             s는 덧붙일 암호문들이다.[ ex) I 3 2 123152 487651 ]
+
+        2. D(삭제) x, y : 앞에서부터 x번째 암호문 바로 다음부터 y개의 암호문을 삭제한다.
+                          [ ex) D 4 4 ]
+
+        3. A(추가) y, s : 암호문 뭉치 맨 뒤에 y개의 암호문을 덧붙인다.
+                          s는 덧붙일 암호문들이다. [ ex) A 2 421257 796813 ]
+    * 위와 같은 네 줄이 한 개의 테스트 케이스
+'''
+# from collections import deque
+
+# tc = 10
+# for t in range(1, tc+1):
+#     n = int(input())  # 원본 암호문 뭉치 속 암호문의 개수
+#     code = list(map(int, input().split()))  # 원본 암호문 뭉치
+#     m = int(input())  # 명령어 개수
+#     command = deque(input().split())  # 명령어
+    
+#     while command:
+#         state = command.popleft()
+#         if state == 'I':
+#             x, y = int(command.popleft()), int(command.popleft())
+#             s = [int(command.popleft()) for _ in range(y)]
+#             for i in s[-1 : -len(s)-1 : -1]:
+#                 code.insert(x+1, i)
+#         elif state == 'D':
+#             x, y = int(command.popleft()), int(command.popleft())
+#             for _ in range(y):
+#                 code.pop(x+1)
+#         elif state == 'A':
+#             y = int(command.popleft())
+#             s = [int(command.popleft()) for _ in range(y)]
+#             code += s
+    
+#     print('#{} {}'.format(t, ' '.join(map(str, code[1:11]))))
+    
+# ----------------------------------------------------------------------
+
+# 3314. 보충학습과 평균
+'''
+    문제 이해 및 접근방법
+'''
+# tc = int(input())
+# for t in range(1, tc+1):
+#     score = list(map(int, input().split()))
+#     sum = 0
+#     for i in score:
+#         if i < 40:
+#             sum += 40
+#         else:
+#             sum += i
+#     print('#{} {}'.format(t, sum//len(score)))
+
+# ----------------------------------------------------------------------
+
+# 16910.원 안의 점  >  다시풀어보기
+'''
+    문제 이해 및 접근방법
+'''
+
 tc = int(input())
 for t in range(1, tc+1):
-    n, k = map(int, input().split())
-    assignment = list(map(int, input().split()))
-    
-    break
+    n = int(input())
+    cnt = 0
+    for i in range(-n, n+1):
+        for j in range(-n, n+1):
+            if (i**2 + j**2) <= n**2:
+                cnt += 1
+    print('#{} {}'.format(t, cnt))

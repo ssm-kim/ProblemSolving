@@ -256,12 +256,12 @@ sys.stdin = open('./public_input.txt', 'r')
     문제 이해 및 접근방법
 '''
 
-tc = int(input())
-for t in range(1, tc+1):
-    n = int(input())
-    cnt = 0
-    for i in range(-n, n+1):
-        for j in range(-n, n+1):
-            if (i**2 + j**2) <= n**2:
-                cnt += 1
-    print('#{} {}'.format(t, cnt))
+# tc = int(input())
+# for t in range(1, tc+1):
+#     n = int(input())
+#     cnt = 0
+#     for i in range(-n, n+1):
+#         for j in range(-n, n+1):
+#             if (i**2 + j**2) <= n**2:
+#                 cnt += 1
+#     print('#{} {}'.format(t, cnt))

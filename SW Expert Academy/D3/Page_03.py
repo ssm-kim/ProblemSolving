@@ -141,3 +141,33 @@ sys.stdin = open('./public_input.txt', 'r', encoding='utf-8')
      문제 이해 및 접근방법
 '''
 
+# tc = int(input())
+# for t in range(1, tc+1):
+#     n = int(input())
+#     if n%2 == 0:
+#         answer = 'Even'
+#     else:
+#         answer = 'Odd'
+#     print('#{} {}'.format(t, answer))
+
+
+# ----------------------------------------------------------------------
+
+# 1240. [S/W 문제해결 응용] 1일차 - 단순 2진 암호코드  >  Pass
+'''
+     문제 이해 및 접근방법
+'''
+tc = int(input())
+for t in range(1, tc+1):
+    n, m = map(int, input().split())
+    board = [list(input()) for _ in range(n)]
+    for row in board:
+        if '1' in row:
+            print(''.join(row))
+    
+# ----------------------------------------------------------------------
+
+# 1240. [S/W 문제해결 응용] 1일차 - 단순 2진 암호코드  >  Pass
+'''
+     문제 이해 및 접근방법
+'''

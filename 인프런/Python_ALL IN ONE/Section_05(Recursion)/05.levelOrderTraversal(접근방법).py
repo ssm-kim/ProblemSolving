@@ -32,28 +32,50 @@
     제목 : Maximum Depth of Binary Tree (이진트리 최대 깊이)
     설명 : Binary Tree 하나가 주어진다. 주어진 Binary Tree의 최대 깊이를 반환하라.
 '''
+# 03.TreeTraversal(트리순회) BFS 구문 참조 !!
 
-# BFS 풀이 먼저 시작
-
+# BFS 풀이
 from collections import deque
-
+'''
 def maxDepth(root):
     max_depth = 0
     if root is None:
         return max_depth
     
     q = deque()
-    q.append((root, 1))  # 처음 시작할 때 깊이는 1
-
+    q.append((root, 1))  # 시작노드깊이는 1
     while q:
-        cur_node, cur_depth = q.popleft()  # 현재 노드와 깊이반환
-        max_depth = max(max_depth, cur_depth)
+        cur_node, cur_depth = q.popleft()      # 노드와 현재깊이 반환
+        max_depth = max(max_depth, cur_depth)  # 최대깊이 노드갱신
+
         if cur_node.left:
             q.append((cur_node.left, cur_depth + 1))
         if cur_node.right:
             q.append((cur_node.right, cur_depth + 1))
+
     return max_depth
+'''
+
+# DFS 풀이
+def maxDepth(root):
+    if root is None:
+        return 0
+    left_depth = maxDepth(root.left)
+    right_depth = maxDepth(root.right)
+    return max(left_depth, right_depth) + 1
 
 root = [3, 9, 20, None, None, 15, 7]
 
-maxDepth(root)
+class TreeNode:
+    def __init__(self, l=None, r=None, v=0):
+        self.left = l
+        self.right = r
+        self.value = v
+
+root = TreeNode(v=3)
+root.left = TreeNode(v=9)
+root.right = TreeNode(v=20)
+root.right.left = TreeNode(v=15)
+root.right.right = TreeNode(v=7)
+
+print(maxDepth(root))

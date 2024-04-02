@@ -1,4 +1,11 @@
-3
-10 3 5
-10 7 5
-100 100 100
+2
+ABCDE
+abcde
+01234
+FGHIJ
+fghij
+AABCDD
+afzz
+09121
+a8EWg6
+P5h3kx

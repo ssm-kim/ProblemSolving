@@ -100,7 +100,7 @@ sys.stdin = open('./public_input.txt', 'r')
 
 # ----------------------------------------------------------------------
 
-# 2806. N-Queen  >  Pass
+# 2806. N-Queen  >  DFS로 풀어야 함
 '''
     문제 이해 및 접근방법
 '''
@@ -136,5 +136,83 @@ sys.stdin = open('./public_input.txt', 'r')
 '''
     문제 이해 및 접근방법
 '''
+# tc = int(input())
+# for t in range(1, tc+1):
+#     num = list(map(int, input().split()))
+#     total = list()
+#     for i in range(len(num)-2):
+#         for j in range(i+1, len(num)-1):
+#             for k in range(j+1, len(num)):
+#                 sum = num[i]+num[j]+num[k]
+#                 if sum not in total:
+#                     total.append(sum)
+#     total.sort(reverse=True)
+#     print('#{} {}'.format(t, total[4]))
 
 # ----------------------------------------------------------------------
+
+# 4299. 태혁이의 사랑은 타이밍
+'''
+    문제 이해 및 접근방법
+        - 일자, 시간을 분으로 변경하는 로직
+'''
+# tc = int(input())
+# for t in range(1, tc+1):
+#     d, h, m = map(int, input().split())
+#     remain = 0  # 분으로 환산
+#     if d <= 11 and h < 11:  # 예외처리
+#         remain = -1
+#     else:
+#         d -= 11
+#         if d > 0:  # 일자를 시간으로 계산
+#             h += (d*24)
+
+#         h -= 11    # 시간 계산
+#         m += (h*60)
+
+#         m -= 11    # 분 계산
+#         remain = m
+    
+#     print('#{} {}'.format(t, remain))
+
+# ----------------------------------------------------------------------
+
+
+# 12004. 구구단 1
+'''
+    문제 이해 및 접근방법
+'''
+# tc = int(input())
+# for t in range(1, tc+1):
+#     n = int(input())
+#     gugudan = list()
+#     for i in range(1, 10):
+#         for j in range(1, 10):
+#             gugudan.append(i*j)
+    
+#     answer = 'No'
+#     if n in gugudan:
+#         answer = 'Yes'
+#     print('#{} {}'.format(t, answer))
+
+# ----------------------------------------------------------------------
+
+# 9480. 민정이와 광직이의 알파벳 공부  >  DFS로 풀어야 함
+'''
+    문제 이해 및 접근방법
+        - 광직이는 현재 N개의 영어 단어를 알고 있고, 이 중 몇 개를 골라 하나의 세트로 만드는데, 각 세트 안에 포함된 단어의 순서는 중요하지 않다.
+'''
+# import itertools as it
+
+# tc = int(input())
+# for t in range(1, tc+1):
+#     n = int(input())
+#     words = [input() for _ in range(n)]
+#     cnt = 0
+#     for i in range(1, n+1):
+#         for j in it.combinations(words, i):
+#             s = set(''.join(j))
+#             if len(s) == 26:
+#                 cnt += 1
+        
+#     print('#{} {}'.format(t, cnt))

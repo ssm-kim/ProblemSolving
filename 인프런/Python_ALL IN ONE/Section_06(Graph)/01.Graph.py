@@ -30,15 +30,15 @@ from collections import deque
 #             print(visited)
 # bfs(graph, 'A')
 
-
 # 깊이 우선 탐색(Depth-first search, DFS) - 기본코드  ->  외워야 코테 적용 가능
 
 visited = []
 
 def dfs(cur_v):
-    visited.append(cur_v)
+    visited.append(cur_v)  # 현재노드방문
     for v in graph[cur_v]:
         if v not in visited:
             dfs(v)
-        print(visited)    
+    print(visited)
+
 dfs('A')

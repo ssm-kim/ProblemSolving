@@ -202,17 +202,32 @@ sys.stdin = open('./public_input.txt', 'r')
     문제 이해 및 접근방법
         - 광직이는 현재 N개의 영어 단어를 알고 있고, 이 중 몇 개를 골라 하나의 세트로 만드는데, 각 세트 안에 포함된 단어의 순서는 중요하지 않다.
 '''
-# import itertools as it
 
-# tc = int(input())
-# for t in range(1, tc+1):
-#     n = int(input())
-#     words = [input() for _ in range(n)]
-#     cnt = 0
-#     for i in range(1, n+1):
-#         for j in it.combinations(words, i):
-#             s = set(''.join(j))
-#             if len(s) == 26:
-#                 cnt += 1
-        
-#     print('#{} {}'.format(t, cnt))
+def check(st):
+    compare = 'abcdefghijklmnopqrstuvwxyz'  # 영단어 소문자
+    st, cnt = list(set(st)), 0
+
+    for i in st:
+        if i in compare:
+            cnt += 1
+    if cnt == 26:
+        return True
+    return False
+
+def dfs(cur_v, st):
+    global answer
+    if check(st):
+        answer += 1
+    if cur_v == n:
+        return
+
+    for next_v in range(cur_v, n):
+        dfs(next_v+1, st + words[next_v])
+
+tc = int(input())
+for t in range(1, tc+1):
+    n = int(input())
+    words = [input() for _ in range(n)]
+    answer = 0
+    dfs(0, '')  # 시작정점 0
+    print('#{} {}'.format(t, answer))

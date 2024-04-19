@@ -18,56 +18,54 @@
      - 0 <= rooms[i][j] < n
 '''
 
-# rooms = [[1, 3], [3, 0, 1], [2], [0]]
+rooms1 = [[1, 3], [3, 0, 1], [2], [0]]
 # output : False
 
-# rooms = [[1], [2], [3], []]
+rooms2 = [[1], [2], [3], []]
 # output : True
 
+rooms3 = [[1,3], [2,4], [0], [4], [], [3,4]]
+# output : False
+import sys
+
 # DFS
-# def canVisitAllRooms(rooms):
-#     visited = [False] * len(rooms)    
+def canVisitAllRooms(rooms):
+    visited = [False] * len(rooms)  # 5번방 방문 안했네?  ->  False // True
+    
+    # v 에 연결되어있는 모든 정점에 방문할거다. 
+    def dfs(v):
+        visited[v] = True
+        for next_v in rooms[v]:
+            if visited[next_v] == False:
+                dfs(next_v)
+    dfs(0)
 
-      # v 에 연결되어있는 모든 정점에 방문할거다. 
-#     def dfs(v):
-#         visited[v] = True
-#         for next_v in rooms[v]:
-#             if visited[next_v] == False:
-#                 dfs(next_v)
+    if False in visited:
+        return False
+    return True
 
-#     dfs(0)
-#     return all(visited)
-#     # if len(visited) == len(rooms):
-#     #     return True
-#     # else:
-#     #     return False
-#     # return visited
-
-# rooms = [[1,3], [2,4], [0], [4], [], [3,4]]
-# print(canVisitAllRooms(rooms))
-
+print(canVisitAllRooms(rooms3))
 
 # BFS 
 from collections import deque
 
 def canVisitAllRooms(rooms):
-    visited = [False] * len(rooms)    
-
-    # v에 연결되어있는 모든 정점에 방문할거다.
+    visited = [False] * len(rooms)
+    
+    # v 에 연결되어있는 모든 정점에 방문할거다. 
     def bfs(v):
         queue = deque()
         queue.append(v)
         visited[v] = True
+
         while queue:
             cur_v = queue.popleft()
             for next_v in rooms[cur_v]:
                 if visited[next_v] == False:
                     queue.append(next_v)
-                    visited[v] = True
+                    visited[next_v] = True
     bfs(0)
 
     return all(visited)
 
-rooms = [[1,3], [2,4], [0], [4], [], [3,4]]
-print(canVisitAllRooms(rooms))
-
+print(canVisitAllRooms(rooms3))

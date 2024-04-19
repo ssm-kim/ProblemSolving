@@ -17,49 +17,59 @@ leetcode - https://leetcode.com/problems/shortest-path-in-binary-matrix/descript
 
 # BFS활용  >  미로찾기문제 또는 최단거리문제에 주로 사용된다.
 
-from collections import deque
-grid = [ [1,0,0],
-         [1,1,0],
-         [1,0,0] ]
+grid1 = [ [1,0,0],
+          [1,1,0],
+          [1,0,0] ]
 # output : -1
 
-grid = [ [0,0,0],
-         [1,1,0],
-         [1,1,0] ]
+grid2 = [ [0,0,0],
+          [1,1,0],
+          [1,1,0] ]
 # output : 4
 
-def shortestPathBinaryMatrix(grid):
-    shortest_path_len = -1
-    row = len(grid)
-    col = len(grid[0])
+grid3 = [ [0,0,0,1,0,0,0],
+          [0,1,1,1,0,1,0],
+          [0,1,0,0,0,1,0],
+          [0,0,0,1,1,1,0],
+          [0,1,0,0,0,0,0] ]
+# output : 9
 
-    if grid[0][0] != 0 or grid[row-1][col-1] != 0 :  # 가지치기
-        return shortest_path_len
+
+
+# from collections import deque
+
+# def shortestPathBinaryMatrix(grid):
+#     shortest_path_len = -1
+#     row = len(grid)     # 행 길이
+#     col = len(grid[0])  # 열 길이
+
+#     if grid[0][0] != 0 or grid[row-1][col-1] != 0:
+#         return shortest_path_len
     
-    visited = [[False]*col for _ in range(row)]
+#     dx = [-1, 1, 0, 0, -1, 1, -1, 1]  # 8방향 탐색
+#     dy = [0, 0, -1, 1, 1, 1, -1, -1]  # 8방향 탐색
+    
+#     visited = [[False]*col for _ in range(row)]  # 방문했는지 확인
+#     visited[0][0] = True  # 시작점은 방문완료
+#     queue = deque()
+#     queue.append((0, 0, 1))  # x좌표, y좌표, 현재길이(처음은 방문했으므로 1부터 시작)
+#     while queue:
+#         cur_x, cur_y, cur_len = queue.popleft()
+        
+#         if (cur_x == row-1) and (cur_y == col-1):  # 목적지에 도착하면 return
+#             shortest_path_len = cur_len
+#             break
 
-    delta = [(-1, 0), (1, 0), (0, -1), (0, 1), 
-             (1, 1), (-1, 1), (1, -1), (-1, -1)]
+#         for i in range(8):
+#             next_x = cur_x + dx[i]
+#             next_y = cur_y + dy[i]
+#             # 범위 벗어나는지? 
+#             if 0 <= next_x < row and 0 <= next_y < col:
+#                 # 0인지 1인지? 방문을 했는지?
+#                 if grid[next_x][next_y] == 0 and not visited[next_x][next_y]:
+#                     queue.append((next_x, next_y, cur_len+1))
+#                     visited[next_x][next_y] = True
+    
+#     return shortest_path_len
 
-    queue = deque()  # 시작점 좌상단좌표, 현재 길이
-    queue.append((0, 0, 1))
-    visited[0][0] = True   # 시작점은 방문완료
-
-    while queue:
-        cur_row, cur_col, cur_len = queue.popleft()
-        # 목적지에 도착했을 때 cur_len를 shortest_path_len에 저장하면 된다.
-        if (cur_row == row-1) and (cur_col == col-1):
-            shortest_path_len = cur_len
-            break
-        # 연결되어있는 정점(vertex) 확인하기
-        for dr, dc in delta:
-            next_row = cur_row + dr
-            next_col = cur_col + dc
-            if (0 <= next_row and next_row < row) and (0 <= next_col and next_col < col):
-                if grid[next_row][next_col] == 0 and not visited[next_row][next_col]:
-                    queue.append((next_row, next_col, cur_len + 1))
-                    visited[next_row][next_col] = True
-
-    return shortest_path_len
-
-print(shortestPathBinaryMatrix(grid))
+# print(shortestPathBinaryMatrix(grid2))

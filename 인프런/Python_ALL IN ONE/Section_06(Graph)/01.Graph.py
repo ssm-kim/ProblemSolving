@@ -16,22 +16,7 @@ graph = {
 }
 
 # 너비 우선 탐색(Breadth-first search, BFS) 기본코드  ->  외워야 코테 적용 가능
-from collections import deque
-
-# def bfs(graph, start_v):
-#     visited = [start_v]
-#     queue = deque()
-#     queue.append(start_v)
-#     while queue:
-#         cur_v = queue.popleft()
-#         for next_v in graph[cur_v]:
-#             if next_v not in visited:
-#                 visited.append(next_v)
-#                 queue.append(next_v)
-#             print(visited)
-
-# bfs(graph, 'A')
-
+# from collections import deque
 # def bfs(graph, start_v):
 #     visited = [start_v]
 #     queue = deque(start_v)
@@ -52,16 +37,6 @@ def dfs(cur_v):
     for v in graph[cur_v]:
         if v not in visited:
             dfs(v)
-    print(visited)
+    return visited
 
-dfs('A')
-
-# visited = []
-# def dfs(cur_v):
-#     visited.append(cur_v)  # 현재노드방문
-#     for v in graph[cur_v]:
-#         if v not in visited:
-#             dfs(v)
-#     print(visited)
-
-# dfs('A')
+print(dfs('A'))

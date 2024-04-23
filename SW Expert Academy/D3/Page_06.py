@@ -210,9 +210,8 @@ sys.stdin = open('./public_input.txt', 'r')
 
 def check(st):
     compare = 'abcdefghijklmnopqrstuvwxyz'  # 영단어 소문자
-    st, cnt = list(set(st)), 0
-
-    for i in st:
+    tmp, cnt = list(set(st)), 0
+    for i in tmp:
         if i in compare:
             cnt += 1
     if cnt == 26:
@@ -225,14 +224,16 @@ def dfs(cur_v, st):
         answer += 1
     if cur_v == n:
         return
-
+    
     for next_v in range(cur_v, n):
         dfs(next_v+1, st + words[next_v])
+
+    return
 
 tc = int(input())
 for t in range(1, tc+1):
     n = int(input())
     words = [input() for _ in range(n)]
     answer = 0
-    dfs(0, '')  # 시작정점 0
+    dfs(0, '')
     print('#{} {}'.format(t, answer))

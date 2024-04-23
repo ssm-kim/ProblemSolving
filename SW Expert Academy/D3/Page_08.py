@@ -45,9 +45,14 @@ sys.stdin = open('./public_input.txt', 'r')
 # 6019. 기차 사이의 파리
 '''
     문제 이해 및 접근방법
+     - 두 기차 A와 B가 충돌하는 시간을 구한다,.
+     - 파리가 그 시간동안 일정한 속도로 비행을 하기 때문에 시간과 속력을 곱해서 답을 도출한다.
 '''
-
-
+# tc = int(input())
+# for t in range(1, tc+1):
+#     d, a, b, f = map(int, input().split())
+#     time = d/(a+b)  # a와 b 기차가 충돌하는 시간
+#     print('#{} {:.6f}'.format(t, time*f))
 
 # ----------------------------------------------------------------------
 
@@ -56,6 +61,23 @@ sys.stdin = open('./public_input.txt', 'r')
     문제 이해 및 접근방법
 '''
 
+def dfs(v, sum):
+    global cnt
+    if v == n:
+        if sum == k:
+            cnt += 1
+        return
+    
+    dfs(v+1, sum + a[v])
+    dfs(v+1, sum)
+
+tc = int(input())
+for t in range(1, tc+1):
+    n, k = map(int, input().split())
+    a = list(map(int, input().split()))
+    cnt = 0
+    dfs(0, 0)
+    print('#{} {}'.format(t, cnt))
 
 
 # ----------------------------------------------------------------------

@@ -9,19 +9,20 @@
     k = 4  >  [1, 2, 3, 4]
 '''
 
-def dfs(start, curr):
-    if len(curr) == k:
-        result.append(curr[:])
-        return []
-    for i in range(start, len(nums)):
-        curr.append(nums[i])
-        dfs(i+1, curr)
-        curr.pop()
+# def backtrack(start, curr):
+#     if len(curr) == k:
+#         result.append(curr[:])
+#         return
 
-    return result
+#     for i in range(start, len(nums)):
+#         if nums[i] not in result:
+#             curr.append(nums[i])
+#             backtrack(i+1, curr)
+#             curr.pop()
+#     return result
 
-result = []
-nums = [1,2,3,4]
-for i in range(len(nums)+1):
-    k, result = i, []
-    print(dfs(0, []))
+# result = []
+# nums = [1,2,3,4]
+# for i in range(len(nums)+1):
+#     k = i
+#     print(backtrack(0, []))

@@ -34,42 +34,37 @@ grid3 = [ [0,0,0,1,0,0,0],
           [0,1,0,0,0,0,0] ]
 # output : 9
 
+from collections import deque
+def shortestPathBinaryMatrix(grid):
+    shortest_path_len = -1
+    row, col = len(grid), len(grid[0])
 
-
-# from collections import deque
-
-# def shortestPathBinaryMatrix(grid):
-#     shortest_path_len = -1
-#     row = len(grid)     # 행 길이
-#     col = len(grid[0])  # 열 길이
-
-#     if grid[0][0] != 0 or grid[row-1][col-1] != 0:
-#         return shortest_path_len
+    if grid[0][0] != 0 or grid[row-1][col-1] != 0:
+        return shortest_path_len
     
-#     dx = [-1, 1, 0, 0, -1, 1, -1, 1]  # 8방향 탐색
-#     dy = [0, 0, -1, 1, 1, 1, -1, -1]  # 8방향 탐색
+    dx = [-1, 1, 0, 0, -1, 1, -1, 1]  # 8방향 탐색
+    dy = [0, 0, -1, 1, 1, 1, -1, -1]
+
+    queue = deque()
+    queue.append((0, 0, 1))  # 시작 정점은 (0, 0) 고정 / 경로의 길이 시작은 1부터
     
-#     visited = [[False]*col for _ in range(row)]  # 방문했는지 확인
-#     visited[0][0] = True  # 시작점은 방문완료
-#     queue = deque()
-#     queue.append((0, 0, 1))  # x좌표, y좌표, 현재길이(처음은 방문했으므로 1부터 시작)
-#     while queue:
-#         cur_x, cur_y, cur_len = queue.popleft()
+    visited = [[False]*col for _ in range(row)]  # 방문했는지 확인
+    visited[0][0] = True  # 시작정점은 방문
+
+    while queue:
+        cur_x, cur_y, cur_len = queue.popleft()
         
-#         if (cur_x == row-1) and (cur_y == col-1):  # 목적지에 도착하면 return
-#             shortest_path_len = cur_len
-#             break
+        # 목적지에 도달하면 break
+        if cur_x == row-1 and cur_y == col-1:
+            break
 
-#         for i in range(8):
-#             next_x = cur_x + dx[i]
-#             next_y = cur_y + dy[i]
-#             # 범위 벗어나는지? 
-#             if 0 <= next_x < row and 0 <= next_y < col:
-#                 # 0인지 1인지? 방문을 했는지?
-#                 if grid[next_x][next_y] == 0 and not visited[next_x][next_y]:
-#                     queue.append((next_x, next_y, cur_len+1))
-#                     visited[next_x][next_y] = True
-    
-#     return shortest_path_len
+        for i in range(8):
+            next_x = cur_x + dx[i]
+            next_y = cur_y + dy[i]
+            if 0 <= next_x < row and 0 <= next_y < col:
+                if grid[next_x][next_y] == 0 and not visited[next_x][next_y]:
+                    visited[next_x][next_y] = True
+                    queue.append((next_x, next_y, cur_len+1))
+    return cur_len
 
-# print(shortestPathBinaryMatrix(grid2))
+print(shortestPathBinaryMatrix(grid2))

@@ -30,42 +30,45 @@ import sys
 
 # DFS
 def canVisitAllRooms(rooms):
-    visited = [False] * len(rooms)  # 5번방 방문 안했네?  ->  False // True
-    
-    # v 에 연결되어있는 모든 정점에 방문할거다. 
-    def dfs(v):
-        visited[v] = True
-        for next_v in rooms[v]:
-            if visited[next_v] == False:
-                dfs(next_v)
-    dfs(0)
+    visited = [False] * len(rooms)
 
+    def dfs(cur_v):
+        visited[cur_v] = True
+        for next_v in rooms[cur_v]:
+            if not visited[next_v]: 
+                dfs(next_v)
+        pass
+
+    dfs(0)
     if False in visited:
         return False
     return True
 
-print(canVisitAllRooms(rooms3))
+print(canVisitAllRooms(rooms1), canVisitAllRooms(rooms2), canVisitAllRooms(rooms3))
+
 
 # BFS 
-from collections import deque
+# rooms2 = [[1], [2], [3], []]
+# from collections import deque
 
-def canVisitAllRooms(rooms):
-    visited = [False] * len(rooms)
-    
-    # v 에 연결되어있는 모든 정점에 방문할거다. 
-    def bfs(v):
-        queue = deque()
-        queue.append(v)
-        visited[v] = True
+# def canVisitAllRooms(rooms):
+#     visited = [False] * len(rooms)
+#     # v 에 연결되어있는 모든 정점에 방문할거다. 
+#     def bfs(start_v):
+#         queue = deque()
+#         queue.append(start_v)
+#         visited[start_v] = True
 
-        while queue:
-            cur_v = queue.popleft()
-            for next_v in rooms[cur_v]:
-                if visited[next_v] == False:
-                    queue.append(next_v)
-                    visited[next_v] = True
-    bfs(0)
+#         while queue:
+#             cur_v = queue.popleft()
+#             for next_v in rooms[cur_v]:
+#                 if not visited[next_v]:
+#                     visited[next_v] = True
+#                     queue.append(next_v)
+#     bfs(0)
 
-    return all(visited)
+#     if False in visited:
+#         return False
+#     return True
 
-print(canVisitAllRooms(rooms3))
+# print(canVisitAllRooms(rooms1), canVisitAllRooms(rooms2), canVisitAllRooms(rooms3))

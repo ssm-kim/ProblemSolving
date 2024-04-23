@@ -22,21 +22,21 @@ graph = {
 #     queue = deque(start_v)
 #     while queue:
 #         cur_v = queue.popleft()
-#         for v in graph[cur_v]:
-#             if v not in visited:
-#                 visited.append(v)  # 방문하고
-#                 queue.append(v)    # 큐에 넣는다.
-#             print(visited)
-# bfs(graph, 'A')
+#         for next_v in graph[cur_v]:
+#             if next_v not in visited:
+#                 visited.append(next_v)  # 방문하고
+#                 queue.append(next_v)    # 큐에 넣는다.
+#     return visited
+
+# print(bfs(graph, 'A'))
 
 # 깊이 우선 탐색(Depth-first search, DFS) - 기본코드  ->  외워야 코테 적용 가능
-
 visited = []
 def dfs(cur_v):
-    visited.append(cur_v)
-    for v in graph[cur_v]:
-        if v not in visited:
-            dfs(v)
+    visited.append(cur_v)  # 방문하고
+    for next_v in graph[cur_v]:
+        if next_v not in visited:
+            dfs(next_v)
     return visited
 
 print(dfs('A'))

@@ -226,12 +226,13 @@ sys.stdin = open('./public_input.txt', 'r', encoding='utf-8')
         - "기러기" 또는 "level" 과 같이 거꾸로 읽어도 제대로 읽은 것과 같은 문장이나 낱말을 회문(palindrome)
         - 주어진 100x100 평면 글자판에서 가로, 세로를 모두 보아 가장 긴 회문의 길이를 구해라
 '''
-def check(s):  # 회문판별함수 완료
-    half = len(s)//2
-    if (len(s)%2) == 0:
-        return s[:half] == ''.join(reversed(s[half:]))
-    else:
-        return s[:half] == ''.join(reversed(s[half+1:]))
+
+def check(lst):
+    st = ''.join(lst)
+    for i in range(len(st)//2):
+        if st[i] != st[-1-i]:
+            return False
+    return True
 
 tc = 10
 for t in range(1, tc+1):
@@ -244,16 +245,42 @@ for t in range(1, tc+1):
             s += row[j][i]
         col.append(s)
 
-    # 0행: 0 ~ 99, 1 ~ 99, 2 ~ 99, 3 ~ 99 ... 
-    # 1행: 0 ~ 99, 1 ~ 99, 2 ~ 99, 3 ~ 99 ... 
-    # 99행까지 반복
     answer = 0
-    for i in range(len(row)):  
-        for j in range(len(row)+1):
-            for k in range(len(row)):
-                if check(''.join(row[k][i:j])) or check(''.join(col[k][i:j])):
-                    answer = max(answer, len(row[k][i:j]), len(row[k][i:j]))
+    for i in range(100):
+        for j in range(1, 100+1):
+            for k in range(100):
+                if check(row[k][i:j]) or check(col[k][i:j]):
+                    answer = max(answer, len(row[k][i:j]), len(col[k][i:j]))
     print('#{} {}'.format(t, answer))
+
+# def check(s):  # 회문판별함수 완료
+#     half = len(s)//2
+#     if (len(s)%2) == 0:
+#         return s[:half] == ''.join(reversed(s[half:]))
+#     else:
+#         return s[:half] == ''.join(reversed(s[half+1:]))
+
+# tc = 10
+# for t in range(1, tc+1):
+#     t = int(input())
+#     row = [list(input()) for _ in range(100)]
+#     col = list()
+#     for i in range(100):
+#         s = ''
+#         for j in range(100):
+#             s += row[j][i]
+#         col.append(s)
+
+#     # 0행: 0 ~ 99, 1 ~ 99, 2 ~ 99, 3 ~ 99 ... 
+#     # 1행: 0 ~ 99, 1 ~ 99, 2 ~ 99, 3 ~ 99 ... 
+#     # 99행까지 반복
+#     answer = 0
+#     for i in range(len(row)):  
+#         for j in range(len(row)+1):
+#             for k in range(len(row)):
+#                 if check(''.join(row[k][i:j])) or check(''.join(col[k][i:j])):
+#                     answer = max(answer, len(row[k][i:j]), len(row[k][i:j]))
+#     print('#{} {}'.format(t, answer))
 
 # ----------------------------------------------------------------------
 

@@ -92,29 +92,29 @@ sys.stdin = open('./public_input.txt', 'r')
 # ----------------------------------------------------------------------
 
 # 1954. 달팽이 숫자
-tc = int(input())
-for t in range(1, tc+1):
-    n = int(input())
-    board = [[0]*n for _ in range(n)]
-    dx = [0, 1, 0, -1]
-    dy = [1, 0, -1, 0]
-    cur_x, cur_y, dir = 0, 0, 0
-    for i in range(1, n*n+1):
-        board[cur_x][cur_y] = str(i)
-        cur_x += dx[dir]  # 인덱스 이동
-        cur_y += dy[dir]
-        if cur_x < 0 or cur_x >= n or cur_y < 0 or cur_y >= n or board[cur_x][cur_y] != 0:
+# tc = int(input())
+# for t in range(1, tc+1):
+#     n = int(input())
+#     board = [[0]*n for _ in range(n)]
+#     dx = [0, 1, 0, -1]
+#     dy = [1, 0, -1, 0]
+#     cur_x, cur_y, dir = 0, 0, 0
+#     for i in range(1, n*n+1):
+#         board[cur_x][cur_y] = str(i)
+#         cur_x += dx[dir]  # 인덱스 이동
+#         cur_y += dy[dir]
+#         if cur_x < 0 or cur_x >= n or cur_y < 0 or cur_y >= n or board[cur_x][cur_y] != 0:
             
-            cur_x -= dx[dir]  # 복구
-            cur_y -= dy[dir]
+#             cur_x -= dx[dir]  # 복구
+#             cur_y -= dy[dir]
             
-            dir = (dir+1) % 4
+#             dir = (dir+1) % 4
             
-            cur_x += dx[dir]  # 방향변경 후 인덱스이동
-            cur_y += dy[dir]
-    print('#%d' % t)
-    for i in board:
-        print(' '.join(i))
+#             cur_x += dx[dir]  # 방향변경 후 인덱스이동
+#             cur_y += dy[dir]
+#     print('#%d' % t)
+#     for i in board:
+#         print(' '.join(i))
 
 # ----------------------------------------------------------------------
 
@@ -139,6 +139,44 @@ for t in range(1, tc+1):
 
 # 1974. 스도쿠 검증
 
+# def check(tmp):
+#     if len(set(tmp)) == 9:
+#         return True
+#     return False
 
+# tc = int(input())
+# for t in range(1, tc+1):
+#     sudoku = [list(map(int, input().split())) for _ in range(9)]
+#     answer = 1
+#     x, y = 0, 0  # 3*3 체크
+#     for i in range(9):
+#         row, col = sudoku[i], list()  # 가로, 세로 체크
+#         for j in range(9):    
+#             col.append(sudoku[j][i])
+
+#         if y == 9:
+#             y = 0
+#             x += 3
+#         box = list()
+#         for j in range(x, x+3):  # 3*3체크
+#             for k in range(y, y+3):
+#                 box.append(sudoku[j][k])
+#         y += 3
+
+#         if not check(row) or not check(col) or not check(box):  # 길이가 9보다 작을 때
+#             answer = 0
+#             break
+
+#     print('#{} {}'.format(t, answer))
+
+# ---------------------------------------------------------------------- 
+
+# 2005. 파스칼의 삼각형
+
+tc = int(input())
+for t in range(1, tc+1):
+    n = int(input())
+    
+    break
 
 # ----------------------------------------------------------------------

@@ -171,12 +171,70 @@ sys.stdin = open('./public_input.txt', 'r')
 
 # ---------------------------------------------------------------------- 
 
-# 2005. 파스칼의 삼각형
+# 2005. 파스칼의 삼각형  >  다시
 
-tc = int(input())
-for t in range(1, tc+1):
-    n = int(input())
-    
-    break
+# tc = int(input())
+# for t in range(1, tc+1):
+#     n = int(input())
+#     board = [[1]*i for i in range(1, n+1)]
+
+#     for i in range(n):
+#         for j in range(1, i+1):
+#             if i == 0 or i == j:
+#                 board[i][j] = 1
+#             else:
+#                 board[i][j] = board[i-1][j-1] + board[i-1][j]
+#     print('#%d' % t)
+#     for i in board:
+#         print(' '.join(map(str, i)))
 
 # ----------------------------------------------------------------------
+
+# 1976. 시각 덧셈
+#  - 시각은 12시간제로 표시한다. 즉, 시가 가질 수 있는 값은 1시부터 12시이다
+# tc = int(input())
+# for t in range(1, tc+1):
+#     hour1, minute1, hour2, minute2 = map(int, input().split())
+
+#     hour = hour1 + hour2
+#     minute = minute1 + minute2
+    
+#     if minute >= 60:
+#         minute -= 60
+#         hour += 1
+    
+#     if hour >= 13:
+#         hour -= 12
+#     print('#{} {} {}'.format(t, hour, minute))
+
+# ----------------------------------------------------------------------
+
+# 1926. 간단한 369게임
+
+# n = int(input())
+# answer = ''
+# for i in range(1, n+1):
+#     s = str(i)
+#     clapCnt = '-' * (s.count('3') + s.count('6') + s.count('9'))
+#     if len(clapCnt) > 0:   # 3, 6, 9가 들어가 있다면 박수로 치환
+#         answer += (clapCnt + ' ')
+#     else:
+#         answer += (s + ' ')
+# print(answer)
+
+# ----------------------------------------------------------------------
+
+# 1970. 쉬운 거스름돈
+
+# tc = int(input())
+# for t in range(1, tc+1):
+#     n = int(input())
+#     kind = [50000,10000,5000,1000,500,100,50,10]
+#     answer = list()
+#     for i in kind:
+#         if n >= i:
+#             answer.append(str(n//i))
+#             n %= i
+#         else:
+#             answer.append('0')
+#     print('#{}\n{}'.format(t, ' '.join(answer)))

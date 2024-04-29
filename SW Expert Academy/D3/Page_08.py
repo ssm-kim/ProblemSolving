@@ -59,26 +59,28 @@ sys.stdin = open('./public_input.txt', 'r')
 # 2817. 부분 수열의 합  >  백트래킹 (BFS, DFS 공부이후 풀어보기)
 '''
     문제 이해 및 접근방법
+        - DFS로 풀이하기
 '''
 
-def dfs(v, sum):
-    global cnt
-    if v == n:
-        if sum == k:
-            cnt += 1
-        return
-    
-    dfs(v+1, sum + a[v])
-    dfs(v+1, sum)
+# def dfs(v, total):
+#     global cnt
+#     if v == n:
+#         if total == k:
+#             cnt += 1
+#         return
 
-tc = int(input())
-for t in range(1, tc+1):
-    n, k = map(int, input().split())
-    a = list(map(int, input().split()))
-    cnt = 0
-    dfs(0, 0)
-    print('#{} {}'.format(t, cnt))
+#     dfs(v+1, total+sequence[v])
+#     dfs(v+1, total)
 
+# tc = int(input())
+# for t in range(1, tc+1):
+#     n, k = map(int, input().split())
+#     sequence = list(map(int, input().split()))
+#     cnt = 0
+
+#     dfs(0, 0)
+
+#     print('#{} {}'.format(t, cnt))
 
 # ----------------------------------------------------------------------
 
@@ -103,7 +105,7 @@ for t in range(1, tc+1):
 
 # ----------------------------------------------------------------------
 
-# 1873. 상호의 배틀필드
+# 1873. 상호의 배틀필드  >  Pass
 '''
     문제 이해 및 접근방법
 '''
@@ -112,11 +114,16 @@ for t in range(1, tc+1):
 
 # ----------------------------------------------------------------------
 
-# 10580. 전봇대
+# 10580. 전봇대  >  Pass
 '''
     문제 이해 및 접근방법
 '''
 
+# ----------------------------------------------------------------------
 
+# 17319. 문자열문자열  >  문제가 안 좋음 Pass
+'''
+    문제 이해 및 접근방법
+'''
 
 # ----------------------------------------------------------------------

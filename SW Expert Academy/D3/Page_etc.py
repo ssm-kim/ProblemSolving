@@ -101,17 +101,159 @@ sys.stdin = open('./public_input.txt', 'r')
     
     ※ p값이 1 ~ 5,000 사이의 값이 들어올 수 있으므로 5,000개의 버스정류장을 정의해야한다. 
 '''
-tc = int(input())
-for t in range(1, tc+1):
-    n = int(input())
-    bus_route = [list(map(int, input().split())) for _ in range(n)]  # 버스 노선 (A, B)
-    p = int(input())
-    bus_stop = {i:0 for i in range(1, 5001)}  # 1 ~ 5000번 버스정류장
+# tc = int(input())
+# for t in range(1, tc+1):
+#     n = int(input())
+#     bus_route = [list(map(int, input().split())) for _ in range(n)]  # 버스 노선 (A, B)
+#     p = int(input())
+#     bus_stop = {i:0 for i in range(1, 5001)}  # 1 ~ 5000번 버스정류장
     
-    for start, stop in bus_route:
-        for i in range(start, stop+1):
-            bus_stop[i] += 1
+#     for start, stop in bus_route:
+#         for i in range(start, stop+1):
+#             bus_stop[i] += 1
 
-    p_stop = [int(input()) for _ in range(p)]  # p번 버스정류장
+#     p_stop = [int(input()) for _ in range(p)]  # p번 버스정류장
 
-    print('#{} {}'.format(t, ' '.join([str(bus_stop[i]) for i in p_stop])))
+#     print('#{} {}'.format(t, ' '.join([str(bus_stop[i]) for i in p_stop])))
+
+# ----------------------------------------------------------------------
+
+# 11315. 오목 판정 (10 페이지)
+'''
+    문제 이해 및 접근방법
+        - N * N 크기의 판이 있다.
+        - 돌이 가로, 세로, 대각선 중 하나의 방향으로 다섯 개 이상 연속한 부분이 있는지 없는지 판정해라
+'''
+# def search(cur_x, cur_y):  # 탐색할 현재 (x, y, 돌개수) 인덱스 넘버
+    
+#     for i in range(4):   # 4방향 탐색
+#         dir, cnt = i, 1  # dx, dy 방향인덱스, 오목인지 아닌지 판별 cnt 변수
+#         next_x = cur_x + dx[dir]
+#         next_y = cur_y + dy[dir]
+#         # 오목칸 범위안에 있고 다음 값이 'o'이면 탐색 유지
+#         while (0 <= next_x < n) and (0 <= next_y < n) and board[next_x][next_y] == 'o':
+#             cnt += 1
+#             next_x += dx[dir]  # while 1번이라도 성공하면 방향은 정해짐
+#             next_y += dy[dir]
+#             if cnt >= 5:       # 하나의 방향으로 5개 이상 연속한 부분이 있다면 True
+#                 return True
+#     return False
+
+# tc = int(input())
+# for t in range(1, tc+1):
+#     n = int(input())
+#     board = [list(input()) for _ in range(n)]
+#     answer = 'NO'
+#     dx = [1, 1, 1, 0]  # 방향은 왼쪽대각선, 아래, 오른쪽대각선, 오른쪽 총 4가지
+#     dy = [-1, 0, 1, 1]
+#     for i in range(n):
+#         for j in range(n):
+#             if board[i][j] == 'o':   # 'o'(돌)이 있는 칸일때
+#                 if search(i, j):     
+#                     answer = 'YES'
+#                     break
+#     print('#{} {}'.format(t, answer))
+
+# ----------------------------------------------------------------------
+
+# 1244. [S/W 문제해결 응용] 2일차 - 최대 상금
+'''
+    문제 이해 및 접근방법
+        - 
+'''
+# def dfs(v, curr):
+#     if v == len(board):  # 현재정점이 숫자판 길이와 같다면
+#         combi_list.append(curr[:])
+#         return
+    
+#     for next_v in range(v, len(board)):
+#         if board[next_v] not in combi_list:
+#             curr.append(board[next_v])
+#             dfs(v+1, curr)
+#             curr.pop()
+#     return
+
+# tc = int(input())
+# for t in range(1, tc+1):
+#     board, exchange = input().split()  # 숫자판 정보, 교환횟수
+#     exchange = int(exchange)
+#     combi_list = list()
+#     print(board, exchange)
+#     dfs(0, [])
+#     print(combi_list)
+#     if t == 2:
+#         break
+
+# ----------------------------------------------------------------------
+
+# 5607. [Professional] 조합  >  페르마소의 정리풀이 Pass
+
+'''
+    문제 이해 및 접근방법
+'''
+# tc = int(input())
+# for t in range(1, tc+1):
+#     n, r = map(int, input().split())
+
+# ----------------------------------------------------------------------
+
+# 13428. 숫자 조작
+'''
+    문제 이해 및 접근방법
+        - 9자리 이하의 음이 아닌 정수 N
+        - 한 쌍의 숫자를 골라 그 위치를 바꾸는 일을 최대 한 번 하여(안 하거나, 한 번만 하여) 새로운 수 M을 만들 수 있다.
+    * 단, 바꾼 결과 M의 맨 앞에 ‘0’이 나타나면 안 된다.
+'''
+# tc = int(input())
+# for t in range(1, tc+1):
+#     n = list(input())
+#     check = list([int(''.join(n))])
+    
+#     for i in range(len(n)):
+#         for j in range(i+1, len(n)):
+#             n[i], n[j] = n[j], n[i]  # 변경
+#             num = int(''.join(n))
+#             if n[0] == '0':  # 맨 앞 '0'이면 Pass
+#                 n[i], n[j] = n[j], n[i]  # 복구
+#                 continue
+
+#             if num not in check:
+#                 check.append(num)
+#             n[i], n[j] = n[j], n[i]  # 복구
+    
+#     print('#{} {} {}'.format(t, min(check), max(check)))
+
+# ----------------------------------------------------------------------
+
+# 7675. 통역사 성경이  >  다시 풀어보기
+'''
+    문제 이해 및 접근방법
+'''
+# tc = int(input())
+# for t in range(1, tc+1):
+#     n = int(input())
+#     sentence = ''
+#     while True:
+#         sentence += input()  # 하나의 문장으로 통합
+#         stopPoint = sentence.count('.') + sentence.count('?') + sentence.count('!')  # 구두점 갯수
+#         if stopPoint == n:   # 문장갯수
+#             break
+    
+#     sentence = sentence.split()
+#     cnt = 0
+#     answer = list()
+
+#     for i in range(len(sentence)):
+#         word = sentence[i].rstrip('.!?')
+    
+#         if word.isalpha():
+#             if word[0].isupper() and word[1:].islower():
+#                 cnt += 1
+#             if len(word) == 1 and word[0].isupper():
+#                 cnt += 1
+
+#         if sentence[i][-1] in ['.', '!', '?']:
+#             answer.append(str(cnt))
+#             cnt = 0
+
+#     print('#{} {}'.format(t, ' '.join(answer)))

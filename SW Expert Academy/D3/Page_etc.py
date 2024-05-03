@@ -252,8 +252,45 @@ sys.stdin = open('./public_input.txt', 'r')
 #             if len(word) == 1 and word[0].isupper():
 #                 cnt += 1
 
-#         if sentence[i][-1] in ['.', '!', '?']:
+#  
+#        if sentence[i][-1] in ['.', '!', '?']:
 #             answer.append(str(cnt))
 #             cnt = 0
 
 #     print('#{} {}'.format(t, ' '.join(answer)))
+
+# ----------------------------------------------------------------------
+
+# 13732. 정사각형 판정  >  다시풀어보기
+'''
+    문제 이해 및 접근방법
+        - N*N 크기의 격자판이 있다.
+        - 각각의 격자는 비어 있거나(‘.’), 막혀 있다(‘#’).
+        - 막혀 있는 칸들이 하나의 정사각형을 이루는지를 판단하는
+'''
+tc = int(input())
+for t in range(1, tc+1):
+    n = int(input())
+    board = [list(input()) for _ in range(n)]
+    coordinate = list()  # (x, y) '#' 좌표
+    for i in range(n):
+        for j in range(n):
+            if board[i][j] == '#':
+                coordinate.append((i, j))
+    
+    leftTopx, leftTopy = coordinate[0]       # 좌상단 좌표
+    rightDownx, rightDowny = coordinate[-1]  # 우하단 좌표
+
+    curr_cnt = ( max(rightDownx, rightDowny)+1 - max(leftTopx, leftTopy) )**2  # 구해야할 정사각형 넓이
+    square_cnt = 0       # 총 '#' 갯수
+
+    for i in range(leftTopx, rightDownx+1):      # x부터 y+1까지 행 확인
+        for j in range(leftTopy, rightDowny+1):  # x부터 y+1까지 열 확인
+            if board[i][j] == '#':
+                square_cnt += 1
+        
+    answer = 'no'
+    if square_cnt == curr_cnt:
+        answer = 'yes'
+    
+    print('#{} {}'.format(t, answer))

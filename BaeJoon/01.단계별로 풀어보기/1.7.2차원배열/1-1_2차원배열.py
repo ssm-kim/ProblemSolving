@@ -62,4 +62,19 @@ sys.stdin = open('../input.txt', 'r')
 # 2563. 색종이
 '''
     문제풀이방법 및 접근
+        - 100*100 2차원배열에서 범위에 포함되는 인덱스 값을 1로 변경 후 전체 합을 구한다.
 '''
+
+# rectangle = [[0]*100 for _ in range(100)]
+# n = int(input())
+# tc = [list(map(int, input().split())) for _ in range(n)]
+# for x, y in tc:
+#     row1, row2, col1, col2 = x, x+10, y, y+10 
+#     for i in range(row1, row2):
+#         for j in range(col1, col2):
+#             rectangle[i][j] = 1
+# area = 0
+# for i in rectangle:
+#     area += sum(i)
+# print(area)
+    

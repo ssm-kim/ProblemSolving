@@ -63,41 +63,64 @@ sys.stdin = open('../input.txt', 'r')
     문제풀이방법 및 접근
         - 모든 경우의 수 탐색
 '''
-n, m = map(int, input().split())
-board = [list(input()) for _ in range(n)]
-answer = 100000000  # 다시 칠해야하는 정사각형 최소갯수
-for i in range(n-8+1):
-    for j in range(m-8+1):
-        cnt1, cnt2 = 0, 0
-        for k in range(i, i+8):
-            for l in range(j, j+8):
-                curr = board[k][l]
-                if (k+l) % 2 == 0:  # 짝수일 때
-                    if curr == 'W':
-                        cnt1 += 1
-                    else:
-                        cnt2 += 1
-                else:  # 홀수일 때
-                    if curr == 'B':
-                        cnt1 += 1
-                    else:
-                        cnt2 += 1
-        answer = min(answer, min(cnt1, cnt2))
-print(answer)
-
+# n, m = map(int, input().split())
+# board = [list(input()) for _ in range(n)]
+# answer = 100000000  # 다시 칠해야하는 정사각형 최소갯수
+# for i in range(n-8+1):
+#     for j in range(m-8+1):
+#         cnt1, cnt2 = 0, 0
+#         for k in range(i, i+8):
+#             for l in range(j, j+8):
+#                 curr = board[k][l]
+#                 if (k+l) % 2 == 0:  # 짝수일 때
+#                     if curr == 'W':
+#                         cnt1 += 1
+#                     else:
+#                         cnt2 += 1
+#                 else:  # 홀수일 때
+#                     if curr == 'B':
+#                         cnt1 += 1
+#                     else:
+#                         cnt2 += 1
+#         answer = min(answer, min(cnt1, cnt2))
+# print(answer)
 
 # --------------------------------------------------
 
 # 1436. 영화감독숌
 '''
     문제풀이방법 및 접근
-        - 모든 경우의 수 탐색
+        - 666은 종말을 나타내는 수
 '''
+# n = int(input())
+# start = 665  # 첫 시작 666-1
+# cnt = 0      # 종말의 숫자라면 카운트
+
+# while True:
+#     if n == cnt:
+#         break
+#     start += 1
+#     if '666' in str(start):
+#         cnt += 1
+# print(start)
 
 # --------------------------------------------------
 
 # 2839. 설탕배달
 '''
     문제풀이방법 및 접근
-        - 모든 경우의 수 탐색
+        - 작은 수부터 계산
 '''
+
+n = int(input())
+three = 0
+while (n % 5 != 0) and (n >= 3):
+    three += 1
+    n -= 3
+
+if n % 5 == 0:
+    five = n // 5
+    answer = three + five
+else:
+    answer = -1
+print(answer)

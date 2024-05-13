@@ -53,9 +53,25 @@ sys.stdin = open('../input.txt', 'r')
 # --------------------------------------------------
 
 # 10816.숫자 카드 2
+'''
+    문제풀이방법 및 접근
+        - 상근의 카드를 딕셔너리에 초기화한다.
+'''
 n = int(input())
 myCards = list(map(int, input().split()))
+total = {}
+for i in myCards:
+    if i not in total:
+        total[i] = 1
+    else:
+        total[i] += 1
+
 m = int(input())
 cards = list(map(int, input().split()))
+for i in cards:
+    if i in total:
+        print(total[i], end=' ')
+    else:
+        print(0, end=' ')
 
 # --------------------------------------------------

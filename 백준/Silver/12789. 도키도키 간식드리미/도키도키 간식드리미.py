@@ -1,23 +1,20 @@
 n = int(input())
 standing = list(map(int, input().split()))
-stack = []
+stack = list()
 target = 1
- 
+
 while standing:
-    if standing[0] == target:
-        standing.pop(0)
+    curr = standing.pop(0)
+    if curr == target:
         target += 1
     else:
-        stack.append(standing.pop(0))
- 
-    while stack:
-        if stack[-1] == target:
+        stack.append(curr)
+
+    for i in range(len(stack)-1, -1, -1):
+        if stack[i] == target:
             stack.pop()
             target += 1
         else:
             break
- 
-if not stack: 
-    print('Nice')
-else:
-    print('Sad')
+        
+print('Nice' if not stack else 'Sad')

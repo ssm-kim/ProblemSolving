@@ -280,15 +280,51 @@ sys.stdin = open('../input.txt', 'r')
 # 2346. 풍선 터뜨리기
 '''
     문제풀이방법 및 접근
-    반례
-        4
-        2 2 2 2
 '''
+# from collections import deque
+# n = int(input())
+# origin = [list(i) for i in enumerate(map(int, input().split()))]
+# balloons = deque(origin[:])
+# answer = list()
+# while True:
+#     idx, number = balloons.popleft()
+#     answer.append(idx+1)
+#     if not balloons:
+#         break
+#
+#     if number > 0:    # 양수이다.
+#         for _ in range(number-1):  # 위에서 pop하므로 전체길이는 -1된다.
+#             balloons.append(balloons.popleft())
+#     elif number < 0:  # 음수이다.
+#         for _ in range(abs(number)):
+#             balloons.appendleft(balloons.pop())
+# for i in answer:
+#     print(i, end=' ')
 
+# --------------------------------------------------
+
+# 24511. queuestack
+'''
+    문제풀이방법 및 접근
+        - 질문게시판 참조
+        - 시간초과?
+'''
+import sys
 from collections import deque
-n = int(input())
-balloons = list(map(int, input().split()))
+n = int(sys.stdin.readline())
+a = list(map(int, sys.stdin.readline().split()))
+b = list(map(int, sys.stdin.readline().split()))
+m = int(sys.stdin.readline())
+c = list(map(int, sys.stdin.readline().split()))
 
-# --------------------------------------------------
-
-# --------------------------------------------------
+for i in range(m):
+    curr = deque([c[i]])  # 큐스택에 삽입할 값
+    for j in range(n):
+        curr.appendleft(b[j])
+        if a[j] == 0:  # 큐   - FIFO
+            b[j] = curr[1]
+            curr = deque([curr[0]])
+        if a[j] == 1:  # 스택 - LIFO
+            b[j] = curr[0]
+            curr = deque([curr[1]])
+    print('{}'.format(curr[0]), end=' ')

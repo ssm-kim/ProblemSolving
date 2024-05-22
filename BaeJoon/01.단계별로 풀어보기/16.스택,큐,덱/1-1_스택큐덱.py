@@ -307,7 +307,7 @@ sys.stdin = open('../input.txt', 'r')
 '''
     문제풀이방법 및 접근
         - 질문게시판 참조
-        - 시간초과?
+        - 시간초과 체크
 '''
 import sys
 from collections import deque

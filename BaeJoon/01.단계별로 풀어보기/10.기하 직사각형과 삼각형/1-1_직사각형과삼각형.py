@@ -130,5 +130,16 @@ sys.stdin = open('../input.txt', 'r')
 # 14215. 세 막대
 '''
     문제풀이방법 및 접근
+        -삼각형의 필수 조건에 의해 작은 두 수의 합이 가장 큰 수보다 크다면 전체의 합을 출력
+        - 작다면 작은 두 수의 합의 두배에서 1을 뺀 값을 출력한다.
 '''
-a, b, c = map(int, input().split())
+length = list(map(int, input().split()))
+length.sort()
+a, b, c = length
+
+if a+b > c:
+    answer = a+b+c
+else:
+    c = a+b-1
+    answer = a+b+c
+print(answer)

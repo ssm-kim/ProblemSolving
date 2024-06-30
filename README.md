@@ -14,7 +14,7 @@
   
 ## SW Expert Academy ( D1 ~ D3 )
 **All Problems VSCode GIT CLI/SourceTree**
--   D1 Finish
+-   **D1 Finish**
 -   **D2 &nbsp;> &nbsp;재시도 문제 풀이 예정**
 -   D3 풀이중
 

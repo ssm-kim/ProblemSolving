@@ -11,7 +11,7 @@ public class SWEA_1926 {
         Scanner sc = new Scanner(System.in);
         int n = sc.nextInt();
 
-        /* for문을 활용한 풀이
+        // for문을 활용한 풀이
         String ans = "";
         for (int i = 1; i <= n; i++) {
             String str = Integer.toString(i);
@@ -29,7 +29,7 @@ public class SWEA_1926 {
 
         }
         System.out.printf("%s ", ans);
-        */
+
 
         /* String 라이브러리 replace 활용한 풀이
         for (int i = 1; i <= n; i++) {

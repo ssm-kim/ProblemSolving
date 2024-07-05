@@ -8,17 +8,17 @@ import java.util.Set;
 
 public class SWEA_1974 {
 
-    public static void main(String[] args) throws FileNotFoundException {
-        System.setIn(new FileInputStream("SWEA/src/input.txt"));
-        Scanner sc = new Scanner(System.in);
-        int T = sc.nextInt();
-        int [][] sudoku = new int[9][9];
+            public static void main(String[] args) throws FileNotFoundException {
+                System.setIn(new FileInputStream("SWEA/src/input.txt"));
+                Scanner sc = new Scanner(System.in);
+                int T = sc.nextInt();
+                int [][] sudoku = new int[9][9];
 
-        for (int tc = 0; tc < T; tc++) {
-            int state = 1;
-            Set<Integer> row = new HashSet<>();  // 행 중복값 제거
-            Set<Integer> col = new HashSet<>();  // 열 중복값 제거
-            Set<Integer> diagonal = new HashSet<>();  // 대각 중복값 제거
+                for (int tc = 0; tc < T; tc++) {
+                    int state = 1;
+                    Set<Integer> row = new HashSet<>();  // 행 중복값 제거
+                    Set<Integer> col = new HashSet<>();  // 열 중복값 제거
+                    Set<Integer> diagonal = new HashSet<>();  // 대각 중복값 제거
             int rIdx = 0, cIdx = 0;
 
             for (int i = 0; i < 9; i++) {  // 입력값 세팅

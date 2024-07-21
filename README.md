@@ -16,6 +16,5 @@
 -   **D2**
 -   **D3**
 
-## BaekJoon
-- **BFS**
-*BaekJoon Hub Plugin Off
+## BaekJoon (BaekJoon Hub Plugin Off)
+- **BFS**<br>

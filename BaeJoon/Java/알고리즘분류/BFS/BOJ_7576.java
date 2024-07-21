@@ -34,30 +34,10 @@ public class BOJ_7576 {
             }
         }
 
-        bfs();  // 너비 우선 탐색
-
-        boolean state = true;
-        loop: for (int i = 0; i < n; i++) {
-                if (!state) {
-                    answer = -1;
-                    break;
-                }
-                for (int j = 0; j < m; j++) {
-                    if (arr[i][j] == 0) {  // 익지 않은 토마토가 있다면 loop를 통해 2중 for문을 빠져나온다.
-                        state = false;
-                        continue loop;
-                    }
-                    answer = Math.max(answer, arr[i][j]);  // 최대값 갱신
-                }
-        }
-
-        if (answer == -1)  // 토마토가 모두 익지 못하는 상황
-            System.out.println(answer);
-        else
-            System.out.println(answer - 1);  // bfs 첫 시작이 항상 '1'이므로 arr 에서 값을 구한 후 -1을 해준다.
+        System.out.println(bfs());  // 너비 우선 탐색
     }
 
-    static void bfs() {
+    static int bfs() {
 
         while (!queue.isEmpty()) {  // 큐가 비어 있지 않다면
             int[] pos = queue.poll();
@@ -75,5 +55,14 @@ public class BOJ_7576 {
                 }
             }
         }
+
+        int answer = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (arr[i][j] == 0) return -1;
+                answer = Math.max(answer, arr[i][j]);
+            }
+        }
+        return answer-1;
     }
 }

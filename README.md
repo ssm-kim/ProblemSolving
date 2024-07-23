@@ -9,7 +9,7 @@
   -   STRING, DATE
  
 - **Algo**
-  - **Lv.00, Lv.01**
+  - **Lv.0, Lv.1**
   
 ## SW Expert Academy
 -   **D1**

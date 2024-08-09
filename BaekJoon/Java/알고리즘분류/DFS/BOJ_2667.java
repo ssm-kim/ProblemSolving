@@ -28,7 +28,7 @@ public class Main {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 if (map[i][j] == 1 && visited[i][j] == 0) {
-                    answer.add(dfs(i, j, 1));
+                    answer.add(dfs(i, j, 1));  // dfs
                 }
             }
         }

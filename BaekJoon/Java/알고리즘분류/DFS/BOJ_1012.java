@@ -29,12 +29,13 @@ public class Main {
                 int y = Integer.parseInt(st.nextToken());  // 배추 위치 y
                 field[x][y] = 1;
             }
-            
-            loop: for (int i = 0; i < m; i++) {
+
+            for (int i = 0; i < m; i++) {
                 for (int j = 0; j < n; j++) {
                     // 배추가 심어져 있고 방문하지 않은 구역
                     if (field[i][j] == 1 && visited[i][j] == 0) {
-                        dfs(i, j);  // dfs 탐색
+                        // System.out.println(dfs(i, j, 1));  // dfs 탐색
+                        dfs(i, j, 1);
                         minBug++;   // 배추 흰 지렁이 추가
                         // break loop;
                     }
@@ -44,7 +45,7 @@ public class Main {
         }
     }
 
-    static void dfs(int cx, int cy) {
+    static int dfs(int cx, int cy, int cnt) {
         visited[cx][cy] = 1;  // 현재 구역 방문
 
         for (int i = 0; i < 4; i++) {
@@ -54,9 +55,11 @@ public class Main {
             // 범위 검사
             if (0 <= nx && nx < m &&  0 <= ny && ny < n) {
                 if (field[nx][ny] == 1 && visited[nx][ny] == 0) {
-                    dfs(nx, ny);
+                    int cur = dfs(nx, ny, cnt); // 몇 개의 배추로 된 영역인지 검사 (생략 가능)
+                    cnt += cur;
                 }
             }
         }
+        return cnt;
     }
 }

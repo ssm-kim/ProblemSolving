@@ -8,9 +8,9 @@ public class Main {
     static int[][] map;
     static boolean[][] visited;
     static Direction[] dir = {  new Direction(0, 1), new Direction(1, 0),
-                                new Direction(0, -1), new Direction(-1, 0),
-                                new Direction(1, 1), new Direction(-1, 1),
-                                new Direction(-1, -1), new Direction(1, -1)  };
+            new Direction(0, -1), new Direction(-1, 0),
+            new Direction(1, 1), new Direction(-1, 1),
+            new Direction(-1, -1), new Direction(1, -1)  };
 
     public static void main(String[] args) throws IOException {
         System.setIn(new FileInputStream("./input.txt"));
@@ -35,7 +35,6 @@ public class Main {
             for (int i = 0; i < h; i++) {
                 for (int j = 0; j < w; j++) {
                     if (map[i][j] == 1 && !visited[i][j]) {
-                        visited[i][j] = true;
                         dfs(i, j);
                         answer++;
                     }
@@ -46,22 +45,25 @@ public class Main {
     }
 
     static void dfs(int start_x, int start_y) {
+        // 기저 조건 : 범위 체크
+        if (start_x < 0 || start_x >= h || start_y < 0 || start_y >= w) {
+            return;
+        }
+        // 기저 조건 : 방문 O 또는 바다
+        if (visited[start_x][start_y] || map[start_x][start_y] == 0) {
+            return;
+        }
+
+        // 현재 노드 방문 처리
+        visited[start_x][start_y] = true;
 
         // 8방향 탐색
-        for (int i = 0; i < 8; i++) {
-            int next_x = start_x + dir[i].dx;
-            int next_y = start_y + dir[i].dy;
+        for (Direction d: dir) {
+            int next_x = start_x + d.dx;
+            int next_y = start_y + d.dy;
 
-            // 범위 체크
-            if (next_x < 0 || next_x >= h || next_y < 0 || next_y >= w) {
-                continue;
-            }
-
-            // 방문 여부 + 땅, 바다 여부
-            if (!visited[next_x][next_y] && map[next_x][next_y] == 1) {
-                visited[next_x][next_y] = true;
-                dfs(next_x, next_y);
-            }
+            // 다음 위치로 dfs 호출
+            dfs(next_x, next_y);
         }
     }
 }

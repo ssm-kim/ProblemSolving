@@ -2,7 +2,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class Main {
+public class main {
 
     static int[][] board = new int[100][100];    // 사다리 영역
     static int[][] visited = new int[100][100];  // 방문 배열
@@ -28,9 +28,9 @@ public class Main {
             for (int col = 0; col < 100; col++) {
                 if (board[0][col] == 1) {  // 출발점 발견
                     dfs(0, col);       // 깊이 우선 탐색
-                    if (arrive) {    // 도착 지점에 왔다면
-                        ans = col;   // 현재 col 값으로 변경
-                        break;       // 탐색 종료
+                    if (arrive) {      // 도착 지점에 왔다면
+                        ans = col;     // 정답 추출
+                        break;         // 탐색 종료
                     }
                 }
             }
@@ -40,7 +40,7 @@ public class Main {
 
     static void dfs(int cx, int cy) {
 
-        // 도착 지점에 도달한 경우
+        // 기저조건 : 도착 지점에 도달한 경우
         if (cx == 99 && board[cx][cy] == 2) {
             arrive = true;  // 도착 플래그 설정
             return;
@@ -59,7 +59,11 @@ public class Main {
                 visited[nx][ny] = 1;  // 방문 표시
                 dfs(nx, ny);
                 visited[nx][ny] = 0;  // 백트래킹 : 방문 표시 제거
-                return;  // 현재 탐색 종료
+
+                // 현재 탐색 종료 : 좌, 우, 아래에 대한  추가적인 탐색 방지
+                // return이 없다면 다른 방향으로 탐색할 수 있어 결과 도출이 안될 수 있다.
+                // ex) 좌 우 무한루프
+                return;  
             }
         }
     }

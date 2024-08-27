@@ -1,97 +1,87 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.StringTokenizer;
 
 public class Main {
 
     static int n;
-    static char[][] board;
-    static boolean[][][] visited;
+    static char[][] map;
+    static boolean[][][] visited;  // 3차원 방문 배열
     static int[] dx = {0, 0, -1, 1};
     static int[] dy = {1, -1, 0, 0};
 
     public static void main(String[] args) throws IOException {
         System.setIn(new FileInputStream("input.txt"));
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
 
-        n = Integer.parseInt(br.readLine());
-        board = new char[n][n];
+        map = new char[n][n];
         for (int i = 0; i < n; i++) {
+            st = new StringTokenizer(br.readLine());
+            char[] c = st.nextToken().toCharArray();
             for (int j = 0; j < n; j++) {
-                board[i][j] = (char) br.read();
-            }
-            br.readLine();
-        }
-
-//        for (char[] chars : board) {
-//            System.out.println(Arrays.toString(chars));
-//        }
-
-        visited = new boolean[2][n][n];  // 3차원 배열 활용
-        int normalCnt = 0, abnormalCnt = 0;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (!visited[0][i][j]) {  // 0번 방문 배열 정상인 사람이 보는 구역 수
-                    normalCnt += bfs(i, j, 0, true);
-                }
-
-                if (!visited[1][i][j]) {  // 1번 방문 배열 비정상인 사람이 보는 구역 수
-                    abnormalCnt += bfs(i, j, 1, false);
-                }
+                map[i][j] = c[j];
             }
         }
-        System.out.printf("%d\n%d", normalCnt, abnormalCnt);
 
-//        for (boolean[][] booleans : visited) {
-//            for (boolean[] aBoolean : booleans) {
-//                System.out.println(Arrays.toString(aBoolean));
-//            }
-//            System.out.println();
-//        }
+        int isNormal = 0, isNotNormal = 0;
+        visited = new boolean[2][n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (!visited[0][i][j]) {  // 정상 ( 적록 색약 X )
+                    isNormal++;
+                    bfs(true, i, j);
+                }
+                if (!visited[1][i][j]) {  // 비정상 ( 적록 색약 O )
+                    isNotNormal++;
+                    bfs(false, i, j);
+                }
+            }
+        }
+        System.out.println(isNormal + " " + isNotNormal);
     }
 
-    // space -> 3차원 방문 배열
-    static int bfs(int start_x, int start_y, int space, boolean isDivision) {
-        Queue<int[]> queue = new LinkedList<>();
-        queue.offer(new int[]{start_x, start_y});
-        visited[space][start_x][start_y] = true;
-        char curColor = board[start_x][start_y];  // 비교 대상
+    static void bfs(boolean state, int cx, int cy) {
+        Queue<int[]> queue = new ArrayDeque<>();
+        queue.offer(new int[]{cx, cy});
+        // 시작점 방문
+        if (state) visited[0][cx][cy] = true;
+        else visited[1][cx][cy] = true;
 
-        while(!queue.isEmpty()) {
+
+        while (!queue.isEmpty()) {
             int[] pos = queue.poll();
-            int cx = pos[0];
-            int cy = pos[1];
 
             for (int i = 0; i < 4; i++) {
-                int nx = cx + dx[i];
-                int ny = cy + dy[i];
+                int nx = pos[0] + dx[i];
+                int ny = pos[1] + dy[i];
 
-                // 범위 검사
-                if (nx < 0 || nx >= n || ny < 0 || ny >= n) {
+                if (0 > nx || nx >= n || 0 > ny || ny >= n) {
                     continue;
                 }
 
-                // isDivision (정상) 방문하지 않았고 현재 컬러와 같다면
-                if (isDivision && !visited[space][nx][ny] && board[nx][ny] == curColor) {
-                    queue.offer(new int[]{nx, ny});
-                    visited[space][nx][ny] = true;
+                if (state && !visited[0][nx][ny]) {    // 정상 + 방문 X
+                    if (map[nx][ny] == map[cx][cy]) {  // next 컬러, current 컬러
+                        visited[0][nx][ny] = true;
+                        queue.offer(new int[]{nx, ny});
+                    }
                 }
 
-                // !isDivision (비정상) 방문하지 않았고
-                if (!isDivision && !visited[space][nx][ny]) {
-                    // 현재 컬러가 빨강과 초록이면서 다음 구역도 빨강과 초록이면 카운트를 한다.
-                    if (curColor == 'R' || curColor == 'G') {
-                        if (board[nx][ny] == 'R' || board[nx][ny] == 'G') {
-                            queue.offer(new int[] {nx, ny});
-                            visited[space][nx][ny] = true;
-                        }
-                    }
-                    else if (board[nx][ny] == curColor) {
-                        queue.offer(new int[] {nx,ny});
-                        visited[space][nx][ny] = true;
+                else if (!state && !visited[1][nx][ny]) {   // 비정상 + 방문 X
+                    if ((map[nx][ny] == 'R' || map[nx][ny] == 'G') && (map[cx][cy] == 'R' || map[cx][cy] == 'G')) {  // next 컬러, current 컬러
+                        visited[1][nx][ny] = true;
+                        queue.offer(new int[]{nx, ny});
+                    } else if (map[nx][ny] == map[cx][cy]) {
+                        visited[1][nx][ny] = true;
+                        queue.offer(new int[]{nx, ny});
                     }
                 }
             }
         }
-        return 1;
     }
 }

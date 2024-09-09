@@ -3,8 +3,7 @@ import java.util.*;
 
 public class Main {
 
-    static int N, M, R, sequence = 1;
-    static boolean[] visited;
+    static int N, M, R, sequence;
     static int[] answer;
     static ArrayList<Integer>[] map;
 
@@ -30,13 +29,18 @@ public class Main {
             map[e].add(s);
         }  // 양방향 그래프
 
+        for (ArrayList<Integer> integers : map) {
+            System.out.println(integers);
+        }
+
         for (int i = 1; i <= N; i++) {
             Collections.sort(map[i]);
         }  // 오름차순 정렬
 
-        visited = new boolean[N + 1];
+        System.out.println();
         answer = new int[N + 1];
-        dfs(R);
+        dfs(R, 1);
+        System.out.println();
         StringBuilder sb = new StringBuilder();
         for (int i = 1; i <= N; i++) {
             sb.append(answer[i]).append("\n");
@@ -44,14 +48,26 @@ public class Main {
         System.out.println(sb);
     }
 
-    static void dfs(int cur) {
-        visited[cur] = true;
+    // 리턴 값 사용
+    static int dfs(int cur, int seq) {
+        answer[cur] = seq;
+
+        for (int next : map[cur]) {
+            if (answer[next] == 0) {
+                seq = dfs(next, seq + 1);
+            }
+        }
+        return seq;
+    }
+
+    // 전역 변수 사용
+    static void dfs1(int cur) {
         answer[cur] = sequence;
 
         for (int next : map[cur]) {
-            if (!visited[next]) {
+            if (answer[next] == 0) {
                 sequence++;
-                dfs(next);
+                dfs1(next);
             }
         }
     }

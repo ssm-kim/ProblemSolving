@@ -4,174 +4,140 @@ import java.util.Scanner;
 
 public class Solution {
 
-    // 포탄 함수(물)
-    public static boolean crossWater(int x, int y, int h, int w, char[][] grid) {
-        if (0 <= x && x < h && 0 <= y && y < w) {
-            if (grid[x][y] == '#') {  // 중간에 강철이 있다면 중지
-                return true;
-            }
-            if (grid[x][y] == '*') {  // 물을 건너 벽돌이면 파괴
-                grid[x][y] = '.';
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // 전차 이동 함수
-    public static boolean move(int i, int j, char pos, int[] previousPosition, char[][] grid, int h, int w) {
-        int x = previousPosition[0];
-        int y = previousPosition[1];
-
-        if (0 <= i && i < h && 0 <= j && j < w) {
-            if (grid[i][j] == '.') {
-                grid[i][j] = pos;  // 이동 후 상하좌우 중 하나로 변경
-                grid[x][y] = '.';  // 이동 전 좌표는 .로 변경
-                return true;
-            }
-        }
-        return false;
-    }
+    static char[][] map;
+    static char[] command;
 
     public static void main(String[] args) throws FileNotFoundException {
-        System.setIn(new FileInputStream("./input.txt"));
-        Scanner scanner = new Scanner(System.in);
-        int tc = scanner.nextInt();
+        System.setIn(new FileInputStream("input.txt"));
+        Scanner sc = new Scanner(System.in);
+        StringBuilder sb = new StringBuilder();
+        int tc = sc.nextInt();
 
         for (int t = 1; t <= tc; t++) {
-            int h = scanner.nextInt();
-            int w = scanner.nextInt();
-            char[][] grid = new char[h][w];
-            for (int i = 0; i < h; i++) {
-                String line = scanner.next();
-                grid[i] = line.toCharArray();
-            }
-
-            int totalCount = scanner.nextInt();
-            char[] commands = scanner.next().toCharArray();
-            int[] tankIdx = new int[2];
-            char tankPos = ' ';
-
-            // 초기 탱크 위치 찾기
-            for (int i = 0; i < h; i++) {
-                for (int j = 0; j < w; j++) {
-                    if (grid[i][j] == '^' || grid[i][j] == '>' || grid[i][j] == 'v' || grid[i][j] == '<') {
-                        tankIdx[0] = i;
-                        tankIdx[1] = j;
-                        tankPos = grid[i][j];
+            int R = sc.nextInt();  // 행
+            int C = sc.nextInt();  // 열
+            int cx = 0, cy = 0;
+            map = new char[R][C];
+            for (int i = 0; i < R; i++) {
+                String str = sc.next();
+                map[i] = str.toCharArray();
+                for (int j = 0; j < C; j++) {
+                    char ch = str.charAt(j);
+                    if (ch == '<' || ch == 'v' || ch == '^' || ch == '>') {
+                        cx = i;
+                        cy = j;
                         break;
                     }
-                }
+                }  // 내 전차 위치 파악
             }
 
-            int x = tankIdx[0];
-            int y = tankIdx[1];
+            // System.out.println(cx + " " + cy);
 
-            for (int i = 0; i < totalCount; i++) {
-                char command = commands[i];
+            int cmdCnt = sc.nextInt();
+            command = sc.next().toCharArray();
+            for (char cmd : command) {
 
-                switch (command) {
-                    case 'U':
-                        tankPos = '^';
-                        int[] previousPositionU = {x, y};
-                        x -= 1;
-                        if (!move(x, y, tankPos, previousPositionU, grid, h, w)) {
-                            x += 1;
-                            grid[x][y] = tankPos;
+                switch (cmd) {
+                    case 'U':  // 전차가 바라보는 방향을 위쪽으로 바꾸고, 한 칸 위의 칸이 평지라면 위 그 칸으로 이동한다.
+                        map[cx][cy] = '^';
+                        if (cx - 1 >= 0 && map[cx - 1][cy] == '.') {
+                            map[cx - 1][cy] = map[cx][cy];  // 전차 이동
+                            map[cx][cy] = '.';  // 평지 복귀
+                            cx--;
                         }
                         break;
-
-                    case 'R':
-                        tankPos = '>';
-                        int[] previousPositionR = {x, y};
-                        y += 1;
-                        if (!move(x, y, tankPos, previousPositionR, grid, h, w)) {
-                            y -= 1;
-                            grid[x][y] = tankPos;
-                        }
-                        break;
-
                     case 'D':
-                        tankPos = 'v';
-                        int[] previousPositionD = {x, y};
-                        x += 1;
-                        if (!move(x, y, tankPos, previousPositionD, grid, h, w)) {
-                            x -= 1;
-                            grid[x][y] = tankPos;
+                        map[cx][cy] = 'v';
+                        if (cx + 1 < R && map[cx + 1][cy] == '.') {
+                            map[cx + 1][cy] = map[cx][cy];  // 전차 이동
+                            map[cx][cy] = '.';  // 평지 복귀
+                            cx++;
                         }
                         break;
-
                     case 'L':
-                        tankPos = '<';
-                        int[] previousPositionL = {x, y};
-                        y -= 1;
-                        if (!move(x, y, tankPos, previousPositionL, grid, h, w)) {
-                            y += 1;
-                            grid[x][y] = tankPos;
+                        map[cx][cy] = '<';
+                        if (cy - 1 >= 0 && map[cx][cy - 1] == '.') {
+                            map[cx][cy - 1] = map[cx][cy];  // 전차 이동
+                            map[cx][cy] = '.';  // 평지 복귀
+                            cy--;
                         }
                         break;
+                    case 'R':
+                        map[cx][cy] = '>';
+                        if (cy + 1 < C && map[cx][cy + 1] == '.') {
+                            map[cx][cy + 1] = map[cx][cy];  // 전차 이동
+                            map[cx][cy] = '.';  // 평지 복귀
+                            cy++;
+                        }
+                        break;
+                    case 'S':
+                        char myDir = map[cx][cy];
+                        int nx = cx;
+                        int ny = cy;
 
-                    case 'S':  // Shoot
-                        char shotDir = grid[x][y];
-                        int[] comeback = {x, y};
+                        if (myDir == '>') {
+                            while (true) {
+                                ny++;
+                                if (nx < 0 || nx >= R || ny < 0 || ny >= C) break;
 
-                        while (true) {
-                            if (shotDir == '^') {
-                                x -= 1;
-                            } else if (shotDir == '>') {
-                                y += 1;
-                            } else if (shotDir == 'v') {
-                                x += 1;
-                            } else if (shotDir == '<') {
-                                y -= 1;
+                                if (map[cx][ny] == '#') break;
+
+                                if (map[cx][ny] == '*') {
+                                    map[cx][ny] = '.';
+                                    break;
+                                }  // 벽돌이면
+                            }
+                        } else if (myDir == '<') {
+                            while (true) {
+                                ny--;
+                                if (nx < 0 || nx >= R || ny < 0 || ny >= C) break;
+
+                                if (map[cx][ny] == '#') break;
+
+                                if (map[cx][ny] == '*') {
+                                    map[cx][ny] = '.';
+                                    break;
+                                }  // 벽돌이면
                             }
 
-                            if (0 <= x && x < h && 0 <= y && y < w) {
-                                char next = grid[x][y];
-                                if (next == '#') {  // 강철이면 중지
+                        } else if (myDir == '^') {
+                            while (true) {
+                                nx--;
+                                if (nx < 0 || nx >= R || ny < 0 || ny >= C) break;
+
+                                if (map[nx][cy] == '#') break;
+
+                                if (map[nx][cy] == '*') {
+                                    map[nx][cy] = '.';
                                     break;
-                                } else if (next == '-') {  // 물이면 다음 좌표까지 계속 진행
-                                    if (shotDir == '^') {
-                                        x -= 1;
-                                        if (crossWater(x, y, h, w, grid)) {
-                                            break;
-                                        }
-                                    } else if (shotDir == '>') {
-                                        y += 1;
-                                        if (crossWater(x, y, h, w, grid)) {
-                                            break;
-                                        }
-                                    } else if (shotDir == 'v') {
-                                        x += 1;
-                                        if (crossWater(x, y, h, w, grid)) {
-                                            break;
-                                        }
-                                    } else if (shotDir == '<') {
-                                        y -= 1;
-                                        if (crossWater(x, y, h, w, grid)) {
-                                            break;
-                                        }
-                                    }
-                                } else if (next == '*') {  // 벽돌이면 평지로 만든 후 중지
-                                    grid[x][y] = '.';
+                                }  // 벽돌이면
+                            }
+
+                        } else if (myDir == 'v') {
+                            while (true) {
+                                nx++;
+                                if (nx < 0 || nx >= R || ny < 0 || ny >= C) break;
+
+                                if (map[nx][cy] == '#') break;
+
+                                if (map[nx][cy] == '*') {
+                                    map[nx][cy] = '.';
                                     break;
-                                } else if (next == '.') {  // 평지면 다음 좌표까지 계속 이동
-                                    continue;
-                                }
-                            } else {  // 범위 벗어나면 반복문 중지
-                                break;
+                                }  // 벽돌이면
                             }
                         }
-                        x = comeback[0];
-                        y = comeback[1];
                         break;
                 }
             }
 
-            System.out.print("#" + t + " ");
-            for (int i = 0; i < h; i++) {
-                System.out.println(new String(grid[i]));
+            sb.append("#").append(t).append(" ");
+            for (char[] chars : map) {
+                for (char aChar : chars) {
+                    sb.append(aChar);
+                }
+                sb.append("\n");
             }
         }
+        System.out.println(sb);
     }
 }

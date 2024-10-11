@@ -1,67 +1,73 @@
+import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 public class Solution {
 
-    static boolean check;
-    static int answer;
+    static final int ROW = 100, COL = 100;
     static int[][] map;
-    static int[] dx = {0,  0, 1};  // 좌 우 아래
+    static ArrayList<Integer> start;
+    static int[] dx = {0, 0, 1};
     static int[] dy = {1, -1, 0};
+    static boolean[][] visited = new boolean[ROW][COL];
+    static boolean target;
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws IOException {
         System.setIn(new FileInputStream("input.txt"));
-        Scanner sc = new Scanner(System.in);
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
 
-        int T = 10;
+        for (int tc = 1; tc <= 10; tc++) {
+            tc = Integer.parseInt(br.readLine());
 
-        for (int tc = 1; tc <= T; tc++) {
-            tc = sc.nextInt();
-
-            map = new int[100][100];
-            for (int i = 0; i < 100; i++) {
-                for (int j = 0; j < 100; j++) {
-                    map[i][j] = sc.nextInt();
+            start = new ArrayList<>();
+            map = new int[ROW][COL];
+            for (int i = 0; i < ROW; i++) {
+                st = new StringTokenizer(br.readLine());
+                for (int j = 0; j < COL; j++) {
+                    map[i][j] = Integer.parseInt(st.nextToken());
                 }
+                if (map[0][i] == 1) {
+                    start.add(i);
+                } // 출발 지점 리스트
             }
 
-            check = false;
-            answer = 0;
-            for (int i = 0; i < 100; i++) {
-                if (map[0][i] == 1) {  // 사다리를 탈 수 있다면
-                    dfs(0, i);
-                    if (check) {
-                        answer = i;
-                        break;
-                    }
+            target = false;
+            for (int col : start) {
+                visited[0][col] = true;
+                dfs(0, col);
+                if (target) {
+                    System.out.println("#" + tc + " " + col);
+                    break;
                 }
             }
-            System.out.println("#" + tc + " " + answer);
         }
     }
 
     static void dfs(int cx, int cy) {
-        if (cx == 100 - 1 && map[cx][cy] == 2) {
-            check = true;
-            return;
-        }  // 도착지점을 찾음
 
-        map[cx][cy] = 0;  // 방문 체크
+        if (cx == 99 && map[cx][cy] == 2) {
+            target = true;
+            return;
+        }
+
         for (int i = 0; i < 3; i++) {
             int nx = cx + dx[i];
             int ny = cy + dy[i];
 
-            if (nx < 0 || nx >= 100 || ny < 0 || ny >= 100) {
+            if (nx < 0 || nx >= ROW || ny < 0 || ny >= COL || visited[nx][ny]) {
                 continue;
-            }  // 범위 검사
+            } // 범위 검사
 
-            if(map[nx][ny] > 0) {  // 1 또는 2일 때만 + 좌 우 무한루프 (생각)
+            if (map[nx][ny] != 0) {
+                visited[nx][ny] = true;
                 dfs(nx, ny);
-                break;
+                visited[nx][ny] = false;
+                return;
             }
         }
-        map[cx][cy] = 1;  // 다음 탐색을 위해 복구 (백트래킹)
     }
 }

@@ -22,9 +22,11 @@ public class Main {
 
         M = Integer.parseInt(br.readLine());
         st = new StringTokenizer(br.readLine());
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < M; i++) {
             int num = Integer.parseInt(st.nextToken());
-            System.out.print(map.getOrDefault(num, 0) + " ");
+            sb.append(map.getOrDefault(num, 0)).append("\n");
         }
+        System.out.println(sb);
     }
 }

@@ -7,8 +7,7 @@ import java.util.*;
 public class Main {
 
     static int K;
-    static int[] map;
-    static LinkedList<Integer> lottoNums = new LinkedList<>();
+    static int[] map, lottoNums;
     static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws IOException {
@@ -22,6 +21,7 @@ public class Main {
             if (K == 0) break;
 
             map = new int[K];
+            lottoNums = new int[6];
             for (int i = 0; i < K; i++) {
                 map[i] = Integer.parseInt(st.nextToken());
             }
@@ -42,9 +42,8 @@ public class Main {
         }
 
         for (int i = start; i < K; i++) {
-            lottoNums.offer(map[i]);
+            lottoNums[depth] = map[i];
             dfs(depth + 1, i + 1);
-            lottoNums.pollLast();
         }
     }
 }

@@ -33,7 +33,7 @@ public class Main {
 
             for (int i = 0; i < N / 2; i++) {
                 check[arr[i]] = true;
-            }
+            }  // 스타트(true) 링크(false) 분리
 
             int top = 0, bottom = 0;
             for (int i = 0; i < N; i++) {

@@ -3,118 +3,113 @@ import java.util.*;
 
 public class Main {
 
-    static int N;
-    static int[][] playerRes;    // 각 선수가 각 이닝에서 얻는 결과
-    static int[] seq;            // 타순
-    static boolean[] visited;    // 선수 방문 여부
-    static int maxScore = 0;     // 최대 점수
+    static final int TOTAL_PLAYERS = 9;
 
+    static int N;               // 이닝 수
+    static int[] seq;           // 타순
+    static int[][] playerRes;   // 각 선수가 각 이닝에서 얻는 결과
+    static boolean[] visited;   // 순열 생성 시 선수 선택 여부
+    static int answer = Integer.MIN_VALUE;
 
     public static void main(String[] args) throws IOException {
         System.setIn(new FileInputStream("input.txt"));
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         N = Integer.parseInt(br.readLine());
-        playerRes = new int[N][9];
+        playerRes = new int[N][TOTAL_PLAYERS];
 
         for (int i = 0; i < N; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < 9; j++) {
+            for (int j = 0; j < TOTAL_PLAYERS; j++) {
                 playerRes[i][j] = Integer.parseInt(st.nextToken());
             }
         }
 
-        seq  = new int[9];
-        visited = new boolean[9];  // 선수 번호(0 ~ 8)에 대한 방문 체크
+        // 순열로 타순 완전 탐색
+        visited = new boolean[TOTAL_PLAYERS];
+        seq = new int[TOTAL_PLAYERS];
 
         // 1번 선수(인덱스 0)는 4번 타자로 고정
-        seq[3] = 0;
         visited[0] = true;
+        seq[3] = 0;
 
         perm(0);
 
-        System.out.println(maxScore);
+        System.out.println(answer);
     }
 
     static void perm(int depth) {
-        if (depth == 9) {
-            int curScore = simulate();
-            maxScore = Math.max(maxScore, curScore);
+        if (depth == TOTAL_PLAYERS) {
+            int totalScore = simulate(seq);
+            answer = Math.max(answer, totalScore);
             return;
         }
 
         if (depth == 3) {
             perm(depth + 1);
             return;
-        }  // 4번 타자는 이미 1번 선수로 고정
+        }  // 4번 타자는 1번 선수로 고정
 
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < TOTAL_PLAYERS; i++) {
             if (!visited[i]) {
                 visited[i] = true;
-                seq[depth] = i;
+                seq[depth] = i;  // 타순
                 perm(depth + 1);
                 visited[i] = false;
             }
-        }  // 나머지 선수들 타순 정하기
-    }
+        }
+    }  // 순열을 이용해 가능한 모든 타순 생성
 
-    static int simulate() {
-        int score = 0;      // 총 점수
-        int playerIdx = 0;  // 현재 타자의 순서
+    static int simulate(int[] seq) {
+        int playerIdx = 0;   // 현재 선수 번호
+        int totalScore = 0;  // 누적 점수
 
-        // N 이닝 동안 게임 진행
         for (int inning = 0; inning < N; inning++) {
-            int outCnt = 0;
-            boolean[] bases = new boolean[3];  // 1루 2루 3루
+            int outCnt = 0;  // 아웃 카운트
+            boolean[] bases = new boolean[3];  // 1루, 2루, 3루 주자 상태
 
             while (outCnt < 3) {
-                int curPlayer = seq[playerIdx];  // 현재 타자 번호
-                int hit = playerRes[inning][curPlayer];  // 현재 타자의 결과
-
+                int curPlayer = seq[playerIdx];
+                int hit = playerRes[inning][curPlayer];
                 if (hit == 0) {
                     outCnt++;
-                }  // 아웃 카운트 +1
+                }  // 아웃
                 else {
-                    score += getScore(bases, hit);  // 점수 계산
-                }
-                playerIdx = (playerIdx + 1) % 9;  // 다음 타자
+                    totalScore += getScore(bases, hit);
+                }  // 1루 2루 3루타 점수 계산
+                playerIdx = (playerIdx + 1) % TOTAL_PLAYERS;  // 다음 타자 이동
             }
         }
-        return score;
+        return totalScore;
     }
 
-    // bases -> 진루 상황, hit 타자 결과
     static int getScore(boolean[] bases, int hit) {
-        int score = 0;
-
+        int curScore = 0;
         if (hit == 4) {
             for (int i = 0; i < 3; i++) {
                 if (bases[i]) {
-                    score++;
                     bases[i] = false;
+                    curScore++;
                 }
-            }  // 1루 2루 3루 주자 처리
-            score++;  // 타자 본인
-        }  // 홈런인 경우
+            }
+            curScore++;  // 현재 타자 계산
+        }  // 홈런
         else {
             for (int i = 2; i >= 0; i--) {
                 if (bases[i]) {
                     if (i + hit >= 3) {
-                        score++;
                         bases[i] = false;
-                    }  // 홈인
+                        curScore++;
+                    }
                     else {
-                        bases[i + hit] = true;
                         bases[i] = false;
-                    }  // 진루
+                        bases[i + hit] = true;
+                    }  // 진루 처리
                 }
-            }  // 3루부터 진루 처리
+            }  // 3루 부터 이동
 
-            // 타자주자 진루
-            bases[hit - 1] = true;
-
-        }  // 안타, 2루타, 3루타인 경우
-
-        return score;
+            bases[hit - 1] = true;  // 현재 주자 진루
+        }  // 1루 2루 3루타 계산
+        return curScore;
     }
 }

@@ -1,27 +1,4 @@
-## Programmers
+### Algorithm Study
 
-- **SQL**
-  -   SELECT
-  -   SUM,MAX,MIN
-  -   GROUP BY
-  -   IS NULL
-  -   JOIN
-  -   STRING, DATE
- 
-- **Algo**
-  - Lv.0
-  - Lv.1
-  
-## SW Expert Academy
--   D1
--   D2
--   D3
--   D4
-
-## BaekJoon (BaekJoon Hub Plugin Off)
-- BFS
-- DFS
-- 완전탐색
-- 정렬
-- 문자열
-- 순열, 조합, 부분집합
+알고리즘 문제를 단계별로 풀이하는 저장소입니다.<br>
+BOJ, SWEA, 프로그래머스에서 제공하는 다양한 문제들을 학습하고 기록합니다.

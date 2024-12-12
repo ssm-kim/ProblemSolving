@@ -4,7 +4,7 @@ import java.util.StringTokenizer;
 
 public class Main {
 
-    static int N, S, answer, check   ;
+    static int N, S, answer, check;
     static int[] map;
 
     public static void main(String[] args) throws IOException {

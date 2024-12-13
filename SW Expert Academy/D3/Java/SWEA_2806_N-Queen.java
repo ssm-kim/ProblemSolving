@@ -1,78 +1,122 @@
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
+import java.io.*;
 
+// 8방향 탐색 !!!
 public class Solution {
 
-    static int n, answer;
+    static int N, answer;
     static int[][] map;
+    static int[] dx = {1, 1, -1, -1, 0, 0, 1, -1};
+    static int[] dy = {-1, 1, 1, -1, -1, 1, 0, 0};
 
-    public static void main(String[] args) throws FileNotFoundException {
-        System.setIn(new FileInputStream("./input.txt"));
-        Scanner sc = new Scanner(System.in);
-
-        int T = sc.nextInt();
+    public static void main(String[] args) throws IOException {
+        System.setIn(new FileInputStream("input.txt"));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int T = Integer.parseInt(br.readLine());
 
         for (int tc = 1; tc <= T; tc++) {
-            n = sc.nextInt();
-            map = new int[n][n];  // 입력 받기
+            N = Integer.parseInt(br.readLine());
+            map = new int[N][N];
+            answer = 0;
 
-            // 문제 해결
-            answer = 0;  // 가능한 배치 수 초기화
-            dfs(0);  // 첫 번째 행부터 탐색 시작
-
-            // 출력
+            dfs(0);
             System.out.println("#" + tc + " " + answer);
         }
     }
 
     static void dfs(int row) {
-        if (row == n) {
-            answer++;  // 퀸을 올바르게 배치한 경우
+        if (row == N) {
+            answer++;
             return;
         }
 
-        for (int col = 0; col < n; col++) {
-            if (isSafe(row, col)) {
-                map[row][col] = 1;  // 퀸 배치
-                dfs(row + 1);  // 다음 행 이동
-                map[row][col] = 0;  // 백트래킹 (퀸 제거)
+        for (int col = 0; col < N; col++) {
+            if (safety(row, col)) {
+                map[row][col] = 1;
+                dfs(row + 1);
+                map[row][col] = 0;
             }
         }
     }
 
-    static boolean isSafe(int row, int col) {
+    static boolean safety(int row, int col) {
 
-        // 같은 열에 퀸이 있는지 확인
-        for (int i = 0; i < row; i++) {
-            if (map[i][col] == 1) {
-                return false;
-            }
+        for (int i = 0; i < 8; i++) {
+            int nx = row;
+            int ny = col;
+
+            while (true) {
+                nx += dx[i];
+                ny += dy[i];
+
+                if (nx < 0 || nx >= N || ny < 0 || ny >= N) {
+                    break;
+                }  // 범위 검사
+
+                if (map[nx][ny] == 1) {
+                    return false;
+                }  // 이미 퀸이 있다면
+            }  // 각 방향에서 범위를 벗어날 때까지 진행 방향에 퀸이 있는지 확인
         }
-
-        // 왼쪽 대각선에 퀸이 있는지 확인
-        int i = row - 1;
-        int j = col - 1;
-        while (i >= 0 && j >= 0) {
-            if (map[i][j] == 1) {
-                return false;
-            }
-            i--;
-            j--;
-        }
-
-        // 오른쪽 대각선에 퀸이 있는지 확인
-        i = row - 1;
-        j = col + 1;
-        while (i >= 0 && j < n) {
-            if (map[i][j] == 1) {
-                return false;
-            }
-            i--;
-            j++;
-        }
-
         return true;
     }
 }
 
+
+
+//import java.io.*;
+//
+//public class Solution {
+//
+//    static int N, answer;
+//    static int[][] map;
+//
+//    public static void main(String[] args) throws IOException {
+//        System.setIn(new FileInputStream("input.txt"));
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//        int T = Integer.parseInt(br.readLine());
+//
+//        for (int tc = 1; tc <= T; tc++) {
+//            N = Integer.parseInt(br.readLine());
+//            map = new int[N][N];
+//            answer = 0;
+//
+//            dfs(0);
+//            System.out.println("#" + tc + " " + answer);
+//        }
+//    }
+//
+//    static void dfs(int row) {
+//        if (row >= N) {
+//            answer++;
+//            return;
+//        }  // 행의 길이가 N 이상이면 중지
+//
+//        for (int col = 0; col < N; col++) {
+//            if (safety(row, col)) {
+//                map[row][col] = 1;
+//                dfs(row + 1);
+//                map[row][col] = 0;
+//            }  // 놓을 수 있는 퀸 위치이면 놓고 백트래킹
+//        }
+//    }
+//
+//    static boolean safety(int row, int col) {
+//
+//        // 세로 체크
+//        for (int i = 0; i < row; i++) {
+//            if (map[i][col] == 1) return false;
+//        }
+//
+//        // 왼쪽 위 대각선 체크
+//        for (int i = row-1, j = col-1; i >= 0 && j >= 0; i--, j--) {
+//            if (map[i][j] == 1) return false;
+//        }
+//
+//        // 오른쪽 위 대각선 체크
+//        for (int i = row-1, j = col+1; i >= 0 && j < N; i--, j++) {
+//            if (map[i][j] == 1) return false;
+//        }
+//
+//        return true;
+//    }
+//}

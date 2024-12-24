@@ -1,59 +1,45 @@
+import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Scanner;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
-public class Main {
+public class Solution {
 
-	static int n, m, answer, cnt;
-	static int[] height, tmp;
+	static int N, M, answer;
+	static int[] weights;
 
-	public static void main(String[] args) throws FileNotFoundException {
-
-		System.setIn(new FileInputStream("./src/input.txt"));
-		Scanner sc = new Scanner(System.in);
-		int T = sc.nextInt();
+	public static void main(String[] args) throws IOException {
+		System.setIn(new FileInputStream("input.txt"));
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int T = Integer.parseInt(br.readLine());
 
 		for (int tc = 1; tc <= T; tc++) {
-			n = sc.nextInt();
-			m = sc.nextInt();
-			height = new int[n];
-
-			for (int i = 0; i < n; i++) {
-				height[i] = sc.nextInt();
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			N = Integer.parseInt(st.nextToken());
+			M = Integer.parseInt(st.nextToken());
+			weights = new int[N];
+			answer = -1;
+			st = new StringTokenizer(br.readLine());
+			for (int i = 0; i < N; i++) {
+				weights[i] = Integer.parseInt(st.nextToken());
 			}
 
-			// 최대 무게 합 (부분 집합)
-			answer = -1;
-			tmp = new int[n];
-			dfs(0, 0);
+			dfs(0, 0, 0);
 			System.out.println("#" + tc + " " + answer);
 		}
 	}
 
-	static void dfs(int depth, int sum) {
-		// m 그램 초과 시 return;
-		if (sum > m) {
+	static void dfs(int depth, int start, int sum) {
+		if (sum > M) return;  // 가지 치기
+
+		if (depth == 2) {
+			answer = Math.max(answer, sum);
 			return;
+		}  // 최대 2개 선택 가능
+
+		for (int i = start; i < N; i++) {
+			dfs(depth + 1, i + 1, sum + weights[i]);
 		}
-
-		// 2개를 선택할 때 마다
-		if (cnt == 2) {
-			answer = Math.max(sum, answer);
-			return;
-		}
-
-		// 최대 깊이 도달 시 return;
-		if (depth == n) {
-			return;
-		}
-
-
-		dfs(depth + 1, sum);
-		cnt++;
-		dfs(depth + 1, sum + height[depth]);
-		cnt--;
 	}
 }

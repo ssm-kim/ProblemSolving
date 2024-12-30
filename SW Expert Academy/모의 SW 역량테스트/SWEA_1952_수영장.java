@@ -1,28 +1,26 @@
--import java.io.BufferedReader;
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Solution {
 
     static int answer;
-    static int[] rates;
+    static int[] costs;
     static int[] plans;
 
     public static void main(String[] args) throws IOException {
         System.setIn(new FileInputStream("input.txt"));
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
-
         int T = Integer.parseInt(br.readLine());
-        for (int tc = 1; tc <= T; tc++) {
-            answer = Integer.MAX_VALUE;
 
-            st = new StringTokenizer(br.readLine());
-            rates = new int[4];
+        for (int tc = 1; tc <= T; tc++) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            costs = new int[4];
             for (int i = 0; i < 4; i++) {
-                rates[i] = Integer.parseInt(st.nextToken());
+                costs[i] = Integer.parseInt(st.nextToken());
             }
 
             st = new StringTokenizer(br.readLine());
@@ -31,33 +29,33 @@ public class Solution {
                 plans[i] = Integer.parseInt(st.nextToken());
             }
 
+            answer = Integer.MAX_VALUE;
             dfs(0, 0);
-
             System.out.println("#" + tc + " " + answer);
-
         }
     }
 
-    static void dfs(int curMonth, int cost) {
-        if (curMonth >= 12) {
-            answer = Math.min(answer, cost);
+    static void dfs(int month, int allCost) {
+        if (month >= 12) {
+            answer = Math.min(answer, allCost);
             return;
-        }  // 현재 누적 달 수
+        }  // 기저 조건  ->  12개월 이상일 때
 
-        if (plans[curMonth] == 0) {
-            dfs(curMonth + 1, cost);
-        }  // 현재 달에 이용계획이 없다면
+        if (plans[month] == 0) {
+            dfs(month + 1, allCost);
+            return;
+        }  // 가지 치기
 
-        // 1일권
-        dfs(curMonth + 1, cost + (plans[curMonth] * rates[0]));
+        // 1일권 사용
+        dfs(month + 1, allCost + (plans[month] * costs[0]));
 
-        // 1달권
-        dfs(curMonth + 1, cost + rates[1]);
+        // 1달권 사용
+        dfs(month + 1, allCost + costs[1]);
 
-        // 3달권
-        dfs(curMonth + 3, cost + rates[2]);
+        // 3달권 사용
+        dfs(month + 3, allCost + costs[2]);
 
-        // 1년권
-        dfs(curMonth + 12, cost + rates[3]);
+        // 1년권 사용
+        dfs(month + 12, allCost + costs[3]);
     }
 }

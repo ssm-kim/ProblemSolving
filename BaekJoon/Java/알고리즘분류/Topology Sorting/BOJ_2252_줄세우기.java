@@ -3,55 +3,66 @@ import java.util.*;
 
 public class Main {
 
-    static int V, E;
-    static int[] inDegree;
+    static int N, M;
+    static ArrayList<Integer>[] students;
+    static int[] inDegree;  // 진입 차수
     static ArrayList<Integer> answer = new ArrayList<>();
-    static ArrayList<Integer>[] map;
 
     public static void main(String[] args) throws IOException {
         System.setIn(new FileInputStream("input.txt"));
+
+        // 입력 받기
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
 
-        V = Integer.parseInt(st.nextToken());  // 학생 수 (노드)
-        E = Integer.parseInt(st.nextToken());  // 키를 비교한 회수 (간선)
-        map = new ArrayList[V + 1];  // 1번 인덱스 사용 X
-        inDegree = new int[V + 1];   // 모든 노드에 대한 진입 차수는 0으로 초기화
+        // 0번째 인덱스 사용 X
+        inDegree = new int[N + 1];
+        students = new ArrayList[N + 1];
+        for (int i = 0; i <= N; i++) students[i] = new ArrayList<>();
 
-        for (int i = 1; i <= V; i++) {
-            map[i] = new ArrayList<>();
-        }  // 리스트 초기화 (0번 인덱스 사용 X)
-
-        for (int i = 0; i < E; i++) {
+        for (int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
-            map[a].add(b);  // 정점 A가 정점 B 앞에 있어야 된다.
-            inDegree[b] += 1;  // 정점 B로 들어오는 간선 +1
+            int from = Integer.parseInt(st.nextToken());
+            int to = Integer.parseInt(st.nextToken());
+            students[from].add(to);
+            inDegree[to]++;  // 진입 차수 +1
         }
 
-        topologyBFS();
-        for (Integer i : answer) {
-            System.out.print(i + " ");
-        }
+        // 위상 정렬
+        boolean notCycle = topologicalSort();
+
+        if (notCycle) {
+            for (int i : answer) {
+                System.out.print(i + " ");
+            }
+        }  // 싸이클이 없다면 출력
     }
 
-    static void topologyBFS() {
-        Queue<Integer> queue = new LinkedList<>();
-        for (int i = 1; i <= V; i++) {
+    static boolean topologicalSort() {
+        LinkedList<Integer> queue = new LinkedList<>();
+        int cnt = 0;  // 방문한 정점의 개수 (싸이클 여부 확인)
+
+        // 1. 진입 차수가 0인 정점을 큐에 넣는다.
+        for (int i = 1; i <= N; i++) {
             if (inDegree[i] == 0) queue.offer(i);
-        }  // 처음 시작 시 진입 차수가 0인 노드를 큐에 삽입
+        }
 
         while (!queue.isEmpty()) {
+            // 2. 큐에서 진입 차수 0 인 정점을 꺼낸다.
             int cur_v = queue.poll();
             answer.add(cur_v);
+            cnt++;
 
-            for (int edge : map[cur_v]) {
-                inDegree[edge] -= 1;
+            // 3. 현재 정점의 진입 차수 -1 (현재 정점의 인접한 모든 간선 제거)
+            for (int edge : students[cur_v]) {
+                inDegree[edge]--;
                 if (inDegree[edge] == 0) {
                     queue.offer(edge);
-                }  // 새롭게 진입 차수가 0이 되는 노드 큐에 삽입
-            }  // 해당 원소와 연결된 노드들의 진입 차수에서 1 빼기
+                }  // 4. 간선 제거 후 진입 차수 0이면 큐에 넣는다.
+            }
         }
+        return N == cnt;  // 싸이클이 존재하면 서로 다름.
     }
 }

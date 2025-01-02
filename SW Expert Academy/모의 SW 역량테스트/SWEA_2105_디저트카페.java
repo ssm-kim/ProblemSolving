@@ -1,82 +1,72 @@
+import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Scanner;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Solution {
 
-    static int n, answer, cnt;
-    static int[][] dir = {{1, 1}, {1, -1}, {-1, -1}, {-1, 1}};
+    static int N, answer;
     static int[][] map;
     static boolean[][] visited;
-    static HashSet<Integer> set;
+    static boolean[] desertKinds;
+    static int[] dx = {1,  1, -1, -1};
+    static int[] dy = {1, -1, -1,  1};
 
-    public static void main(String[] args) throws FileNotFoundException {
-        System.setIn(new FileInputStream("./input.txt"));
-        Scanner sc = new Scanner(System.in);
-        int T = sc.nextInt();
+    public static void main(String[] args) throws IOException {
+        System.setIn(new FileInputStream("input.txt"));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int T = Integer.parseInt(br.readLine());
 
         for (int tc = 1; tc <= T; tc++) {
-            n = sc.nextInt();
-            map = new int[n][n];
-            set = new HashSet<>();
-            visited = new boolean[n][n];
+            N = Integer.parseInt(br.readLine());
+            map = new int[N][N];
             answer = -1;
 
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    map[i][j] = sc.nextInt();
+            for (int i = 0; i < N; i++) {
+                StringTokenizer st = new StringTokenizer(br.readLine());
+                for (int j = 0; j < N; j++) {
+                    map[i][j] = Integer.parseInt(st.nextToken());
                 }
             }
 
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    set.clear();
-                    visited = new boolean[n][n];
-
-                    set.add(map[i][j]);
-                    visited[i][j] = true;   // 출발지 표시
-                    dfs(i, j, i, j, 0);
-                    visited[i][j] = false;
-                    set.remove(map[i][j]);  // 복귀
+            for (int i = 0; i < N; i++) {
+                for (int j = 0; j < N; j++) {
+                    visited = new boolean[N][N];
+                    desertKinds = new boolean[101];  // 총 디저트 종류 ( 1 ~ 100 )
+                    visited[i][j] = true;
+                    desertKinds[map[i][j]] = true;
+                    dfs(1, i, j, i, j, 0);
                 }
             }
             System.out.println("#" + tc + " " + answer);
         }
     }
 
-    static void dfs(int cx, int cy, int sx, int sy, int ch) {
+    static void dfs(int cafeVisitCnt, int cx, int cy, int bx, int by, int previousDir) {
+        // previousDir : 경로가 한 방향으로만 진행되도록 이전 방향과 같거나 다음 방향으로만 이동 가능
+        for (int i = previousDir; i < 4; i++) {
+            int nx = cx + dx[i];
+            int ny = cy + dy[i];
 
-        for (int d = ch; d < 4; d++) {
-            int nx = cx + dir[d][0];
-            int ny = cy + dir[d][1];
-
-//            for (boolean[] booleans : visited) {
-//                System.out.println(Arrays.toString(booleans));
-//            }
-//            System.out.println(set);
-//            System.out.println();
-
-            if (set.size() >= 3 && nx == sx && ny == sy) {
-                // System.out.println(set + "check");
-                cnt = set.size();
-                answer = Math.max(answer, cnt);
+            if (nx == bx && ny == by && cafeVisitCnt >= 4) {
+                answer = Math.max(answer, cafeVisitCnt);
                 return;
-            }
+            }  // 시작점으로 돌아옴. 사각형 완성 시 정답 갱신 (카페 4개 이상 방문)
 
-            if (nx < 0 || nx >= n || ny < 0 || ny >= n || visited[nx][ny]) {  // 범위, 방문 검사
-                continue;
-            }
+            if (nx < 0 || nx >= N || ny < 0 || ny >= N) continue;
+            if (visited[nx][ny]) continue;           // 이미 방문 했으면
+            if (desertKinds[map[nx][ny]]) continue;  // 동일한 디저트라면
 
-            if (set.contains(map[nx][ny])) {  // 중복 검사
-                continue;
-            }
-
+            // 방문 처리 및 디저트 종류 체크
             visited[nx][ny] = true;
-            set.add(map[nx][ny]);
-            dfs(nx, ny, sx, sy, d);
-            set.remove(map[nx][ny]);
+            desertKinds[map[nx][ny]] = true;
+
+            // 다음 지점 이동 (현재 방향 i를 이전 방향으로 전달)
+            dfs(cafeVisitCnt + 1, nx, ny, bx, by, i);
+
+            // 백트래킹: 방문 및 디저트 체크 취소
+            desertKinds[map[nx][ny]] = false;
             visited[nx][ny] = false;
         }
     }

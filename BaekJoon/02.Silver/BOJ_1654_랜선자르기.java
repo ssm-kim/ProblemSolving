@@ -1,40 +1,56 @@
+import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
 
 public class Main {
 
-    public static void main(String[] args) throws FileNotFoundException {
+    static int N, K;
+    static int[] cables;
+
+    public static void main(String[] args) throws IOException {
         System.setIn(new FileInputStream("input.txt"));
-        Scanner sc = new Scanner(System.in);
 
-        int k = sc.nextInt();
-        int n = sc.nextInt();
+        // 입력 받기
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        long answer = Integer.MIN_VALUE;
-        long[] cable = new long[k];
-        for (int i = 0; i < k; i++) {
-            cable[i] = sc.nextLong();
-        }
+        K = Integer.parseInt(st.nextToken());  // 이미 가지고 있는 랜선 개수
+        N = Integer.parseInt(st.nextToken());  // 필요한 랜선의 개수
+        cables = new int[K];
+        for (int i = 0; i < K; i++) cables[i] = Integer.parseInt(br.readLine());
 
-        Arrays.sort(cable);  // 정렬
+        Arrays.sort(cables);
 
-        long lt = 1, rt = cable[k - 1];
-        while (lt <= rt) {
-            long mid = (lt + rt) / 2;
+        System.out.println(binarySearch());
+    }
 
-            long cutCnt = 0; // 현재 랜선 갯수
-            for (long i : cable) {
-                cutCnt += (i / mid);
+    static long binarySearch() {
+        // 1. 탐색 범위 설정
+        long left = 1;
+        long right = cables[K - 1];
+        long answer = 0;
+
+        // 2. 이진 탐색 시작
+        while (left <= right) {
+            long mid = (left + right) / 2;
+
+            // 3. 각 랜선을 mid 길이로 잘라서 나오는 개수 계산
+            long cnt = 0;  // 현재 길이로 잘랐을 때 나오는 랜선 개수
+            for (int i = 0; i < K; i++) {
+                cnt += cables[i] / mid;
             }
 
-            if (cutCnt >= n) {  // n개 이상 + 길이가 가장 긴 랜선
-                answer = mid;
-                lt = mid + 1;
-            } else {
-                rt = mid - 1;
+            // 4. 개수에 따라 범위 조정
+            if (cnt >= N) {        // 목표보다 많이 나오면
+                answer = mid;      // 답 저장
+                left = mid + 1;    // 더 긴 길이 시도
+            } else {               // 목표보다 적게 나오면
+                right = mid - 1;   // 더 짧은 길이 시도
             }
         }
-        System.out.println(answer);
+        return answer;
     }
 }

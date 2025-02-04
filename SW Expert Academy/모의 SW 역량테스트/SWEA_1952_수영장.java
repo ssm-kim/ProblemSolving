@@ -2,14 +2,13 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Solution {
 
-    static int answer;
-    static int[] costs;
-    static int[] plans;
+    static int minCost;
+    static int[] plans, costs;
+    static StringTokenizer st;
 
     public static void main(String[] args) throws IOException {
         System.setIn(new FileInputStream("input.txt"));
@@ -17,45 +16,45 @@ public class Solution {
         int T = Integer.parseInt(br.readLine());
 
         for (int tc = 1; tc <= T; tc++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            costs = new int[4];
-            for (int i = 0; i < 4; i++) {
-                costs[i] = Integer.parseInt(st.nextToken());
-            }
+            plans = new int[12];   // 12개월 이용 계획
+            costs = new int[4];   // 이용권
 
             st = new StringTokenizer(br.readLine());
-            plans = new int[12];
-            for (int i = 0; i < 12; i++) {
-                plans[i] = Integer.parseInt(st.nextToken());
-            }
+            for (int i = 0; i < 4; i++) costs[i] = Integer.parseInt(st.nextToken());
 
-            answer = Integer.MAX_VALUE;
-            dfs(0, 0);
-            System.out.println("#" + tc + " " + answer);
+            st = new StringTokenizer(br.readLine());
+            for (int i = 0; i < 12; i++) plans[i] = Integer.parseInt(st.nextToken());
+
+            minCost = Integer.MAX_VALUE;
+            subset(0, 0);
+
+            System.out.println("#" + tc + " " + minCost);
         }
     }
 
-    static void dfs(int month, int allCost) {
+    static void subset(int month, int totalCost) {
+        if (totalCost >= minCost) return;  // 현재 요금이 최소 요금보다 크다면 return
+
         if (month >= 12) {
-            answer = Math.min(answer, allCost);
+            minCost = totalCost;
             return;
-        }  // 기저 조건  ->  12개월 이상일 때
+        }  // 12개월 초과하면 return
 
         if (plans[month] == 0) {
-            dfs(month + 1, allCost);
+            subset(month + 1, totalCost);
             return;
-        }  // 가지 치기
+        }  // 이번 달에 계획이 없다면 다음 달로 직행
 
-        // 1일권 사용
-        dfs(month + 1, allCost + (plans[month] * costs[0]));
+        // 1일 이용권
+        subset(month + 1, totalCost + (plans[month] * costs[0]));
 
-        // 1달권 사용
-        dfs(month + 1, allCost + costs[1]);
+        // 1개월 이용권
+        subset(month + 1, totalCost + costs[1]);
 
-        // 3달권 사용
-        dfs(month + 3, allCost + costs[2]);
+        // 3개월 이용권
+        subset(month + 3, totalCost + costs[2]);
 
-        // 1년권 사용
-        dfs(month + 12, allCost + costs[3]);
+        // 1년 이용권
+        subset(month + 12, totalCost + costs[3]);
     }
 }

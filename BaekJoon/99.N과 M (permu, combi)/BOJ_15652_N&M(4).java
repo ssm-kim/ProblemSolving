@@ -1,42 +1,43 @@
+
+import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
 
 public class Main {
 
-    static int n, m;
     static int[] arr;
+    static int N, M;
+    static StringBuilder sb = new StringBuilder();
 
-    public static void main(String[] args) throws FileNotFoundException {
-        System.setIn(new FileInputStream("./input.txt"));
-        Scanner sc = new Scanner(System.in);
+    public static void main(String[] args) throws IOException {
+        System.setIn(new FileInputStream("input.txt"));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        n = sc.nextInt();
-        m = sc.nextInt();
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        arr = new int[M];
 
-        // 중복 조합
-        arr = new int[m];
+        combinations(0, 0);
 
-        dfs(0, 1);
-
+        System.out.println(sb);
     }
 
-    static void dfs(int depth, int start) {
-        // 기저 조건 : depth가 m에 도달하면
-        if (depth == m) {
-            // 현재 조합 출력
-            for (int i : arr) {
-                System.out.print(i + " ");
+    static void combinations(int depth, int start) {
+        if (depth == M) {
+            for (int x : arr) {
+                sb.append(x).append(" ");
             }
-            System.out.println();
+            sb.append("\n");
             return;
         }
 
-        for (int nextNum = start; nextNum <= n; nextNum++) {
-            arr[depth] = nextNum;  // 현재 깊이에 값 저장
-            dfs(depth + 1, nextNum);  // 다음 깊이로 이동, 현재 숫자는 그대로 유지
+        for (int i = start; i < N; i++) {
+            arr[depth] = i + 1;
+            combinations(depth + 1, i);
         }
-
     }
-
 }

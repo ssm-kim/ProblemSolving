@@ -1,51 +1,55 @@
+
+import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Scanner;
+import java.util.StringTokenizer;
 
 public class Main {
 
-    static int n, m;
-    static int[] arr, curPermutations;
+    static int[] arr, select;
     static boolean[] visited;
+    static int N, M;
+    static StringBuilder sb = new StringBuilder();
 
-    public static void main(String[] args) throws FileNotFoundException {
-        System.setIn(new FileInputStream("./input.txt"));
-        Scanner sc = new Scanner(System.in);
+    public static void main(String[] args) throws IOException {
+        System.setIn(new FileInputStream("input.txt"));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        n = sc.nextInt();
-        m = sc.nextInt();
-        arr = new int[n];
-        curPermutations = new int[m];
-        visited = new boolean[n];
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        arr = new int[N];
+        visited = new boolean[N];
+        select = new int[M];
 
-        for (int i = 0; i < n; i++) {
-            arr[i] = sc.nextInt();
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < N; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
         }
 
         Arrays.sort(arr);
+        permutations(0);
 
-        // 순열
-        dfs(0);
+        System.out.println(sb);
     }
 
-    static void dfs(int depth) {
-        // 기저 조건 : depth가 m에 도달하면
-        if (depth == m) {
-            for (int i : curPermutations) {  // 현재 순열 출력
-                System.out.print(i + " ");
+    static void permutations(int depth) {
+        if (depth == M) {
+            for (int num : select) {
+                sb.append(num).append(" ");
             }
-            System.out.println();
+            sb.append("\n");
             return;
         }
 
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < N; i++) {
             if (!visited[i]) {
-                visited[i] = true;  // 현재 인덱스 사용 표시
-                curPermutations[depth] = arr[i];  // 현재 깊이에 값 저장
-                dfs(depth + 1);  // 다음 깊이 이동
-                visited[i] = false; // 백트래킹 (사용 표시 제거)
+                visited[i] = true;
+                select[depth] = arr[i];
+                permutations(depth + 1);
+                visited[i] = false;
             }
         }
     }

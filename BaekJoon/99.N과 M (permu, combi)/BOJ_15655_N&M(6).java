@@ -1,46 +1,47 @@
+import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.Scanner;
+import java.util.StringTokenizer;
 
 public class Main {
 
-    static int n, m;
-    static int[] arr, curCombinations;
+    static int N, M;
+    static int[] arr, select;
 
-    public static void main(String[] args) throws FileNotFoundException {
-        System.setIn(new FileInputStream("./input.txt"));
-        Scanner sc = new Scanner(System.in);
+    public static void main(String[] args) throws IOException {
+        System.setIn(new FileInputStream("input.txt"));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        n = sc.nextInt();
-        m = sc.nextInt();
-        arr = new int[n];
-        curCombinations = new int[m];
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        arr = new int[N];
+        select = new int[M];
 
-        for (int i = 0; i < n; i++) {
-            arr[i] = sc.nextInt();
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < N; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
         }
 
         Arrays.sort(arr);
-
-        // 조합
-        dfs(0, 0);
+        combinations(0, 0);
     }
 
-    static void dfs(int depth, int start) {
-        // 기저 조건 : depth가 m에 도달하면
-        if (depth == m) {
-            // 현재 조합 출력
-            for (int curCombination : curCombinations) {
-                System.out.print(curCombination + " ");
+    static void combinations(int depth, int start) {
+        if (depth == M) {
+            for (int i : select) {
+                System.out.print(i + " ");
             }
             System.out.println();
             return;
         }
 
-        for (int idx = start; idx < n; idx++) {
-            curCombinations[depth] = arr[idx];    // 현재 깊이에 값 저장
-            dfs(depth + 1, idx + 1);  // 다음 깊이 이동 및 인덱스 +1
+        for (int i = start; i < N; i++) {
+            select[depth] = arr[i];
+            combinations(depth + 1, i + 1);
         }
+
     }
 }

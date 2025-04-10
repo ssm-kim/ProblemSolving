@@ -1,12 +1,15 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
 
     static int N, M;
-    static int[] arr, temp;
-    static StringBuilder sb;
+    static int[] arr, select;
+    static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws IOException {
         System.setIn(new FileInputStream("input.txt"));
@@ -15,34 +18,31 @@ public class Main {
 
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
+        arr = new int[N];
+        select = new int[M];
 
         st = new StringTokenizer(br.readLine());
-        arr = new int[N];
-
         for (int i = 0; i < N; i++) {
             arr[i] = Integer.parseInt(st.nextToken());
         }
-        Arrays.sort(arr);
 
-        // 중복 순열
-        sb = new StringBuilder();
-        temp = new int[M];
-        dfs(0);
+        Arrays.sort(arr);
+        permutations(0);
         System.out.println(sb);
     }
 
-    static void dfs(int depth) {
+    static void permutations(int depth) {
         if (depth == M) {
-            for (int i : temp) {
+            for (int i : select) {
                 sb.append(i).append(" ");
             }
             sb.append("\n");
             return;
         }
 
-        for (int idx = 0; idx < N; idx++) {
-            temp[depth] = arr[idx];
-            dfs(depth + 1);
+        for (int i = 0; i < N; i++) {
+            select[depth] = arr[i];
+            permutations(depth + 1);
         }
     }
 }

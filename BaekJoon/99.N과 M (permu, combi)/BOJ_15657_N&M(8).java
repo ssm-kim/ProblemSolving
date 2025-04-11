@@ -1,47 +1,50 @@
+import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Scanner;
-
-import javax.swing.plaf.synth.SynthSplitPaneUI;
+import java.util.StringTokenizer;
 
 public class Main {
 
-	static int n, m;
-	static int[] arr, temp;
-	static boolean[] visited;
-	
-	public static void main(String[] args) throws FileNotFoundException {
-		Scanner sc = new Scanner(System.in);
+	static int N, M;
+	static int[] arr, select;
+	static StringBuilder sb = new StringBuilder();
 
-		n = sc.nextInt();
-		m = sc.nextInt();
-		arr = new int[n];
-		for (int i = 0; i < n; i++) {
-			arr[i] = sc.nextInt();
+	public static void main(String[] args) throws IOException {
+		System.setIn(new FileInputStream("input.txt"));
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		arr = new int[N];
+		select = new int[M];
+
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < N; i++) {
+			arr[i] = Integer.parseInt(st.nextToken());
 		}
 
 		Arrays.sort(arr);
-		// 중복 조합
-		temp = new int[m];
-		visited = new boolean[n];
-		dfs(0, 0);
 
+		combinations(0, 0);
+		System.out.println(sb);
 	}
 
-	static void dfs(int depth, int start) {
-		if (depth == m) {
-			for (int i : temp) {
-				System.out.print(i + " ");
+	static void combinations(int depth, int start) {
+		if (depth == M) {
+			for (int i : select) {
+				sb.append(i).append(" ");
 			}
-			System.out.println();
+			sb.append("\n");
 			return;
 		}
 
-		for (int next = start; next < n; next++) {
-			temp[depth] = arr[next];
-			dfs(depth + 1, next);
+		for (int i = start; i < N; i++) {
+			select[depth] = arr[i];
+			combinations(depth + 1, i);
 		}
+
 	}
 }

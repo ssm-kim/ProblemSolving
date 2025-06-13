@@ -2,109 +2,118 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
 
-class Node {
+class Point {
+
     int x;
     int y;
-    int cnt;
-    public Node(int x, int y, int cnt) {
+    int distance;
+
+    public Point(int x, int y, int distance) {
         this.x = x;
         this.y = y;
-        this.cnt = cnt;
+        this.distance = distance;
     }
 }
 
 public class Main {
 
-    static int minDist = Integer.MAX_VALUE;
-    static int N, M, homeTotalCnt = 0;
-    static int[][] map;
+    static int minDistance = Integer.MAX_VALUE;
+    static int n, m;
+    static int homeCnt;  // 총 집의 갯수
+    static int[][] board;
+
+    static int[] select;
+    static ArrayList<int[]> chickenPos = new ArrayList<>();  // 치킨 집 좌표
+
+    static Queue<Point> queue = new LinkedList<>();
     static boolean[][] visited;
-    static int[] dx = {1, 0, -1, 0};
-    static int[] dy = {0, 1, 0, -1};
-    static ArrayList<int[]> chickenHouse = new ArrayList<>();
-    static Queue<Node> queue = new ArrayDeque<>();
+    static int[] dx = {0, 0, -1, 1};
+    static int[] dy = {1, -1, 0, 0};
 
     public static void main(String[] args) throws IOException {
         System.setIn(new FileInputStream("input.txt"));
-
-        // 입력 받기
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());  // 최대 치킨집 선택 횟수
-        map = new int[N][N];
-        visited = new boolean[N][N];
-        for (int i = 0; i < N; i++) {
+
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());  // 치킨 집을 최대 M개 선택
+
+        board = new int[n][n];                 // 도시의 정보
+        for (int i = 0; i < n; i++) {
             st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < N; j++) {
-                map[i][j] = Integer.parseInt(st.nextToken());
-                if (map[i][j] == 1) homeTotalCnt++;                      // 전체 집 갯수
-                if (map[i][j] == 2) chickenHouse.add(new int[] {i, j});  // 치킨집 좌표 저장
+            for (int j = 0; j < n; j++) {
+                board[i][j] = Integer.parseInt(st.nextToken());
+                if (board[i][j] == 1) {
+                    homeCnt++;
+                }
+                if (board[i][j] == 2) {
+                    chickenPos.add(new int[]{i, j});  // 치킨 집 좌표 저장
+                }
             }
         }
 
-        combinations(0, 0, new ArrayList<int[]>());
-        System.out.println(minDist);
+        visited = new boolean[n][n];  // 방문 배열 초기화
+        select = new int[m];          // 전체 치킨집에서 m개의 치킨집을 선택하는 조합
+        combinations(0, 0);
+        System.out.println(minDistance);
     }
 
-    static void combinations(int depth, int start, ArrayList<int[]> selected) {
-        if (depth == M) {
-            int curDist = bfs(selected);  // BFS 치킨 거리 계산
-            minDist = Math.min(minDist, curDist);
+    static void combinations(int depth, int start) {
+        if (depth == m) {
+            // 매번 탐색을 위한 큐와 방문 배열 초기화
+            queue.clear();
+            for (boolean[] visit : visited) Arrays.fill(visit, false);
+
+            for (int sIdx : select) {
+                int[] pos = chickenPos.get(sIdx);
+                queue.offer(new Point(pos[0], pos[1], 0));
+                visited[pos[0]][pos[1]] = true;  // 시작점은 방문 체크 하기
+            }
+
+            int distanceSum = bfs();  // 최단 거리 탐색
+            minDistance = Math.min(minDistance, distanceSum);
             return;
-        }  // M개의 치킨집을 선택하는 조합
+        }
 
-        for (int i = start; i < chickenHouse.size(); i++) {
-            selected.add(chickenHouse.get(i));
-            combinations(depth + 1, i + 1, selected);
-            selected.remove(selected.size() - 1);  // 백트래킹
+        for (int i = start; i < chickenPos.size(); i++) {
+            select[depth] = i;
+            combinations(depth + 1, i + 1);
         }
     }
 
-    static int bfs(ArrayList<int[]> selected) {
-
-        // queue 및 방문 배열 초기화
-        queue.clear();
-        for (int i = 0; i < N; i++) Arrays.fill(visited[i], false);
-
-        for (int[] curCoordinate : selected) {
-            int sx = curCoordinate[0];
-            int sy = curCoordinate[1];
-            queue.offer(new Node(sx, sy, 0));
-            visited[sx][sy] = true;
-        }  // 선택된 치킨집들을 시작점으로 동시에 BFS 시작
-
-        int totalDistance = 0, curHomeCnt = 0;
-
+    static int bfs() {
+        int curHomeCnt = 0;
+        int distanceSum = 0;
         while (!queue.isEmpty()) {
-            Node nd = queue.poll();
-            int cx = nd.x;
-            int cy = nd.y;
-            int distance = nd.cnt;
+            Point p = queue.poll();
+            int cx = p.x;
+            int cy = p.y;
+            int distance = p.distance;
 
-            if (map[cx][cy] == 1) {
-                totalDistance += distance;  // 집 방문시 누적 거리 추가
-                curHomeCnt++;               // 집 방문시 +1
-            }
+            if (board[cx][cy] == 1) {
+                distanceSum += distance;
+                curHomeCnt++;
+            }  // 현재 칸이 집이라면
 
-            if (homeTotalCnt == curHomeCnt) {
-                break;
-            }  // 모든 집을 찾으면 조기 종료
+            if (curHomeCnt == homeCnt) break;  // 모든 집을 다 방문 했다면
 
             for (int i = 0; i < 4; i++) {
                 int nx = cx + dx[i];
                 int ny = cy + dy[i];
 
-                // 범위 검사 + 방문 검사
-                if (nx < 0 || nx >= N || ny < 0 || ny >= N) continue;
-                if (visited[nx][ny]) continue;
+                // 범위 체크 + 방문 체크
+                if (nx < 0 || nx >= n || ny < 0 || ny >= n || visited[nx][ny]) continue;
 
                 visited[nx][ny] = true;
-                queue.offer(new Node(nx, ny, distance + 1));
+                queue.offer(new Point(nx, ny, distance + 1));
             }
         }
-        return totalDistance;
+        return distanceSum;
     }
 }

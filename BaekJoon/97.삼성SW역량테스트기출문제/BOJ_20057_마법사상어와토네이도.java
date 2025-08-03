@@ -121,17 +121,17 @@ public class Main {
         int[] dy = {1, 0, -1, 0};
 
         boolean[][] visited = new boolean[n][n];
-        LinkedList<int[]> coordinate = new LinkedList<>();
+        LinkedList<int[]> path = new LinkedList<>();
         int dir = 0;  // 동쪽부터 시작
         int cx = 0, cy = 0;
 
         while (true) {
-            if (coordinate.size() == n * n) {
+            if (path.size() == n * n) {
                 break;
             }
 
             // 현재 위치 추가
-            coordinate.offer(new int[]{cx, cy, dir});
+            path.offer(new int[]{cx, cy, dir});
             visited[cx][cy] = true;
 
             // 각 방향으로 가능한 만큼 이동
@@ -144,9 +144,9 @@ public class Main {
                     break;
                 }
                 visited[nx][ny] = true;
-                coordinate.offer(new int[]{nx, ny, dir});
+                path.offer(new int[]{nx, ny, 0});
             }
-            dir = (dir + 1) % 4;
+            dir = 1;  // 남쪽으로 뱡향 전환
 
             for (int i = 0; i < n; i++) {
                 int nx = cx + dx[dir] + i;
@@ -157,9 +157,9 @@ public class Main {
                     break;
                 }
                 visited[nx][ny] = true;
-                coordinate.offer(new int[]{nx, ny, dir});
+                path.offer(new int[]{nx, ny, 1});
             }
-            dir = (dir + 1) % 4;
+            dir = 2;  // 서쪽으로 뱡향 전환
 
             for (int i = 0; i < n; i++) {
                 int nx = cx + dx[dir];
@@ -170,9 +170,9 @@ public class Main {
                     break;
                 }
                 visited[nx][ny] = true;
-                coordinate.offer(new int[]{nx, ny, dir});
+                path.offer(new int[]{nx, ny, 2});
             }
-            dir = (dir + 1) % 4;
+            dir = 3;  // 북쪽으로 뱡향 전환
 
             for (int i = 0; i < n; i++) {
                 int nx = cx + dx[dir] - i;
@@ -183,11 +183,11 @@ public class Main {
                     break;
                 }
                 visited[nx][ny] = true;
-                coordinate.offer(new int[]{nx, ny, dir});
+                path.offer(new int[]{nx, ny, 3});
             }
-            dir = (dir + 1) % 4;
-            cy++;  // 다음 레이어로 이동
+            dir = 0;  // 다시 동쪽으로 뱡향 전환
+            cy++;     // 다음 레이어(안쪽)로 이동: 시작점을 한 칸 안쪽으로
         }
-        return coordinate;
+        return path;
     }
 }

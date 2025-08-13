@@ -2,49 +2,45 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
 
-    static int N, maxProfit = 0;
-    static int[] T;  // 상담을 완료하는 데 걸리는 기간
-    static int[] P;  // 상담하고 받는 금액
+    static int n, profit;
+    static int[] t, p;
 
     public static void main(String[] args) throws IOException {
         System.setIn(new FileInputStream("input.txt"));
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        N = Integer.parseInt(br.readLine());
-        T = new int[N];
-        P = new int[N];
-        
-        for (int i = 0; i < N; i++) {
+        n = Integer.parseInt(br.readLine());
+        t = new int[n];  // 각각의 상담은 상담을 완료하는데 걸리는 기간
+        p = new int[n];  // 상담을 했을 때 받을 수 있는 금액
+
+        for (int i = 0; i < n; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
-            T[i] = Integer.parseInt(st.nextToken());
-            P[i] = Integer.parseInt(st.nextToken());
-        }  // 각 상담의 소요 기간과 금액 입력받기
-
-
-        dfs(0, 0);  // ( 현재 날짜, 누적 수익 )
-        System.out.println(maxProfit);
-    }
-
-
-    static void dfs(int day, int profit) {
-        if (day > N) return;
-
-        // 퇴사일: 최대 수익 갱신 후 종료
-        if (day == N) {
-            maxProfit = Math.max(profit, maxProfit);
-            return;
+            t[i] = Integer.parseInt(st.nextToken());
+            p[i] = Integer.parseInt(st.nextToken());
         }
 
-        // 현재 날짜의 상담 건너뜀.
-        dfs(day + 1, profit);
+        profit = 0;
+        dfs(0, 0);  // 0일차부터 백트래킹 시작
+        System.out.println(profit);
+    }
 
-        // 현재 날짜의 상담 진행. ( 상담이 퇴사일 이내에 끝나는 경우만 )
-        if (day + T[day] <= N) {
-            dfs(day + T[day], profit + P[day]);
+    static void dfs(int curDay, int rate) {
+        profit = Math.max(profit, rate);  // 최대 수익 갱신
+
+        if (curDay == n) return;  // 퇴사일 도달시 종료
+
+        // 상담 X
+        dfs(curDay + 1, rate);
+
+        // 상담 O (퇴사 전에 끝날 수 있을 때만)
+        if (curDay + t[curDay] <= n) {
+            dfs(curDay+ t[curDay], rate + p[curDay]);
         }
     }
 }

@@ -1,11 +1,14 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
 
-    static boolean[] robot;   // 로봇 존재 여부
-    static int[] durability;  // 각 칸의 내구도
-    static int n, k;
+    static int n, k, zeroCnt;  // 컨베이어 길이, 종료조건, 내구도0인 칸 개수
+    static int[] a;            // 각 칸의 내구도
+    static boolean[] pos;      // 각 칸의 로봇 존재 여부
 
     public static void main(String[] args) throws IOException {
         System.setIn(new FileInputStream("input.txt"));
@@ -14,63 +17,72 @@ public class Main {
 
         n = Integer.parseInt(st.nextToken());
         k = Integer.parseInt(st.nextToken());
-        st = new StringTokenizer(br.readLine());
 
-        durability = new int[n * 2];
-        robot = new boolean[n * 2];
+        st = new StringTokenizer(br.readLine());
+        a = new int[n * 2];
         for (int i = 0; i < n * 2; i++) {
-            durability[i] = Integer.parseInt(st.nextToken());
+            a[i] = Integer.parseInt(st.nextToken());
         }
 
-        int upIdx = 0;       // 올리는 위치 (고정)
-        int downIdx = n - 1; // 내리는 위치 (고정)
+        pos = new boolean[n * 2];
+        zeroCnt = 0;
         int step = 0;
-
         while (true) {
+            if (k <= zeroCnt) break;  // 내구도 0인 칸의 개수가 k 이상이면 종료
             step++;
 
-            // 1. 벨트와 로봇이 함께 시계방향 회전
+            // 1. 벨트+로봇 회전
             rotate();
-            robot[downIdx] = false; // 회전으로 내리는 위치에 도달한 로봇 즉시 제거
+            pos[n - 1] = false;  // 내릴 수 있다면 즉시 내림.
 
-            // 2. 로봇들을 앞으로 이동 (뒤에서부터 처리해야 겹치지 않음)
-            for (int i = n - 2; i >= 0; i--) {
-                if (robot[i] && !robot[i + 1] && durability[i + 1] >= 1) {
-                    robot[i] = false;
-                    robot[i + 1] = true;
-                    durability[i + 1]--; // 이동한 칸의 내구도 감소
-                }
+            // 2. 로봇 이동 (뒤에서부터 = 먼저 올라간 순서)
+            move();
+            pos[n - 1] = false;  // 내릴 수 있다면 즉시 내림.
+
+            // 3. 새 로봇 올리기
+            if(!pos[0] && a[0] >= 1) {
+                pos[0] = true;
+                a[0]--;
+
+                if (a[0] == 0) zeroCnt++;
             }
-
-            // 3. 올리는 위치에 새 로봇 추가
-            if (!robot[upIdx] && durability[upIdx] >= 1) {
-                durability[upIdx]--;
-                robot[upIdx] = true;
-            }
-
-            // 4. 이동으로 내리는 위치에 도달한 로봇 제거
-            robot[downIdx] = false;
-
-            // 5. 종료 조건: 내구도 0인 칸이 k개 이상
-            int zeroCnt = 0;
-            for (int i : durability) {
-                if (i == 0) zeroCnt++;
-            }
-            if (zeroCnt >= k) break;
         }
         System.out.println(step);
     }
 
-    // 벨트 시계방향 회전: 모든 원소를 한 칸씩 뒤로 이동
-    static void rotate() {
-        int tmpDur = durability[durability.length - 1];
-        boolean tmpRobot = robot[robot.length - 1];
+    static void move() {
+        // 뒤에서 부터 순회한다. (가장 먼저 벨트에 올라간 로봇부터 확인)
+        for (int i = n * 2 - 1; i >= 0; i--) {
+            if (pos[i]) {  // 현재 칸에 로봇이 있다면
+                // 이동하려는 칸에 로봇 없고, 그 칸의 내구도 1이상 남아 있는지 체크
+                if (!pos[(i + 1) % (n * 2)] && a[(i + 1) % (n * 2)] >= 1) {
+                    // 이동하려는 칸에 로봇 추가 + 내구도 1 감소
+                    pos[(i + 1) % (n * 2)] = true;
+                    a[(i + 1) % (n * 2)]--;
+                    if (a[(i + 1) % (n * 2)] == 0) zeroCnt++;
 
-        for (int i = durability.length - 1; i > 0; i--) {
-            durability[i] = durability[i - 1];
-            robot[i] = robot[i - 1];
+                    // 현재 칸에 로봇 여부 제거
+                    pos[i] = false;
+                }
+            }
         }
-        durability[0] = tmpDur;
-        robot[0] = tmpRobot;
+    }
+
+    static void rotate() {
+        // 시계방향 회전: 마지막 원소를 맨 앞으로
+
+        // 내구도 이동
+        int tmp = a[n * 2 - 1];  // 마지막 내구도 저장
+        for (int i = n * 2 - 2; i >= 0; i--) {
+            a[i + 1] = a[i];
+        }
+        a[0] = tmp;
+
+        // 로봇 이동
+        boolean robot = pos[n * 2 - 1];  // 마지막 로봇 여부 저장
+        for (int i = n * 2 - 2; i >= 0; i--) {
+            pos[i + 1] = pos[i];
+        }
+        pos[0] = robot;
     }
 }

@@ -1,31 +1,34 @@
-// 최적화 버전
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
 
+class BabyShark {
+    int x, y, size, eatenCnt;
 
-class Shark {
-    int x, y, size, distance, eaten;
-
-    public Shark() {
-
-    }
-    public Shark(int x, int y, int size, int distance, int eaten) {
+    public BabyShark(int x, int y, int size, int eatenCnt) {
         this.x = x;
         this.y = y;
         this.size = size;
-        this.distance = distance;
-        this.eaten = eaten;
+        this.eatenCnt = eatenCnt;
     }
 }
 
 public class Main {
 
+    static BabyShark babyShark;
     static int n;
-    static int[] dx = {0, 0, -1, 1};
-    static int[] dy = {1, -1, 0, 0};
-    static int[][] map;
+    static int minDistance;
+
+    // 상 좌 하 우
+    static int[] dx = {-1, 0, 1, 0};
+    static int[] dy = {0, -1, 0, 1};
     static boolean[][] visited;
-    static Queue<Shark> queue = new LinkedList<>();;
+    static int[][] map;
 
     public static void main(String[] args) throws IOException {
         System.setIn(new FileInputStream("input.txt"));
@@ -33,304 +36,132 @@ public class Main {
 
         n = Integer.parseInt(br.readLine());
         map = new int[n][n];
-        Shark shark = new Shark();
-
-        // 맵 입력 및 아기 상어 위치 찾기
         for (int i = 0; i < n; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
             for (int j = 0; j < n; j++) {
                 map[i][j] = Integer.parseInt(st.nextToken());
                 if (map[i][j] == 9) {
-                    map[i][j] = 0;  // 아기 상어 위치를 빈 칸으로 변경
-                    shark = new Shark(i, j, 2, 0, 0);  // 초기 크기 2 고정
+                    babyShark = new BabyShark(i, j, 2, 0);
+                    map[i][j] = 0;  // 상어 위치를 빈 칸으로 초기화
                 }
             }
         }
 
-        int totalTime = 0;
+        int seconds = 0;
         while (true) {
-
-            // 먹을 수 있는 물고기들 탐색 (BFS)
-            ArrayList<Shark> fishes = fishEatingCount(new ArrayList<>(), shark);
+            // BFS로 먹을 수 있는 물고기들 찾기
+            ArrayList<int[]> eatenPos = eatenFishCheck(babyShark.x, babyShark.y);
 
             // 먹을 수 있는 물고기가 없으면 종료
-            if (fishes.isEmpty()) {
-                totalTime = shark.distance;
+            if (eatenPos.isEmpty()) {
                 break;
             }
-            // 물고기가 1마리인 경우
-            else if (fishes.size() == 1) {
-                shark = fishes.get(0);
-                shark = eatFish(shark);
-                map[shark.x][shark.y] = 0;
+            // 물고기가 1마리면 바로 먹기
+            else if (eatenPos.size() == 1) {
+                int[] pos = eatenPos.get(0);
+                eatenFish(pos);
+                seconds += pos[2];
             }
-            // 물고기가 여러 마리인 경우 - 거리, 위쪽, 왼쪽 우선순위로 선택
+            // 여러 마리면 우선순위에 따라 선택 - 1. 가장 위, 2. 가장 왼쪽
             else {
-                shark = selectClosestFish(fishes);
-                shark = eatFish(shark);
-                map[shark.x][shark.y] = 0;
+                // 가장 위에 있는 물고기들 찾기
+                int targetX = Integer.MAX_VALUE;
+                for (int[] pos : eatenPos) {
+                    targetX = Math.min(targetX, pos[0]);
+                }
+
+                ArrayList<int[]> onTop = new ArrayList<>();
+                int targetY = Integer.MAX_VALUE;
+                for (int[] pos : eatenPos) {
+                    if (targetX == pos[0]) {
+                        onTop.add(new int[] {pos[0], pos[1], pos[2]});
+                        targetY = Math.min(targetY, pos[1]);  // 가장 왼쪽 좌표
+                    }
+                }
+
+                if (onTop.size() == 1) {
+                    int[] pos = onTop.get(0);
+                    eatenFish(pos);
+                    seconds += pos[2];
+                }
+                // 가장 위에 여러 마리면 가장 왼쪽 물고기 선택
+                else {
+                    for (int[] pos : onTop) {
+                        if (targetX == pos[0] && targetY == pos[1]) {
+                            eatenFish(pos);
+                            seconds += pos[2];
+                            break;
+                        }
+                    }
+                }
             }
         }
 
-        System.out.println(totalTime);
+        System.out.println(seconds);
     }
 
-    // 물고기 먹고 크기 증가 로직
-    static Shark eatFish(Shark shark) {
-        // 자기 크기만큼 먹으면 크기 증가
-        if (shark.size == shark.eaten + 1) {
-            return new Shark(shark.x, shark.y, shark.size + 1, shark.distance, 0);
+    // 물고기를 먹고 상어 위치 이동 및 크기 증가 처리
+    static void eatenFish(int[] pos) {
+        map[babyShark.x][babyShark.y] = 0;  // 기존 상어 위치 제거
+        int nx = pos[0];
+        int ny = pos[1];
+
+        map[nx][ny] = 9;  // 새 위치에 상어 배치
+
+        // 크기만큼 먹으면 크기 증가, 아니면 먹은 개수만 증가
+        if (babyShark.size == babyShark.eatenCnt + 1) {
+            babyShark = new BabyShark(nx, ny, babyShark.size + 1, 0);
         } else {
-            return new Shark(shark.x, shark.y, shark.size, shark.distance, shark.eaten + 1);
+            babyShark = new BabyShark(nx, ny, babyShark.size, babyShark.eatenCnt + 1);
         }
     }
 
-    // 가장 가까운 물고기 선택 (거리 -> 위쪽 -> 왼쪽 우선순위)
-    static Shark selectClosestFish(ArrayList<Shark> fishes) {
-        // 이미 가장 가까운 거리의 물고기들만 들어오므로 거리 비교 불필요
+    // BFS로 먹을 수 있는 물고기들을 최단거리 순으로 찾기
+    static ArrayList<int[]> eatenFishCheck(int sx, int sy) {
+        Queue<int[]> queue = new LinkedList<>();
+        ArrayList<int[]> eatenFish = new ArrayList<>();
+        queue.offer(new int[] {sx, sy, 0});
 
-        // 1마리면 바로 반환
-        if (fishes.size() == 1) {
-            return fishes.get(0);
-        }
-
-        // 여러 마리면 위쪽, 왼쪽 우선순위로 선택
-        // 가장 위쪽 행 찾기
-        int topRow = Integer.MAX_VALUE;
-        for (Shark fish : fishes) {
-            topRow = Math.min(topRow, fish.x);
-        }
-
-        // 가장 위쪽 행에서 가장 왼쪽 열 찾기
-        int leftCol = Integer.MAX_VALUE;
-        for (Shark fish : fishes) {
-            if (topRow == fish.x) {
-                leftCol = Math.min(leftCol, fish.y);
-            }
-        }
-
-        // 최종 선택된 물고기 반환
-        for (Shark fish : fishes) {
-            if (topRow == fish.x && leftCol == fish.y) {
-                return fish;
-            }
-        }
-
-        return fishes.get(0);  // 혹시 모를 경우
-    }
-
-    // BFS로 먹을 수 있는 물고기들 찾기
-    static ArrayList<Shark> fishEatingCount(ArrayList<Shark> fishes, Shark start) {
-        queue.offer(start);
         visited = new boolean[n][n];
-        visited[start.x][start.y] = true;
-        int minFishDistance = -1;  // 처음 발견한 물고기의 거리
+        visited[sx][sy] = true;
 
+        int minDist = Integer.MAX_VALUE;
         while (!queue.isEmpty()) {
-            Shark current = queue.poll();
-            int cx = current.x;
-            int cy = current.y;
+            int[] pos = queue.poll();
+            int cx = pos[0];
+            int cy = pos[1];
+            int distance = pos[2];
+
+            if (distance > minDist) continue;  // 이미 더 먼 거리면 탐색 중단
+
+            // 먹을 수 있는 물고기 발견
+            if ( map[cx][cy] != 0 &&  // 빈 칸이 아니고
+                map[cx][cy] != 9 &&  // 자기 위치가 아니고
+                map[cx][cy] < babyShark.size) {
+                minDist = Math.min(minDist, distance);
+                eatenFish.add(new int[] {cx, cy, distance});
+            }
 
             for (int i = 0; i < 4; i++) {
                 int nx = cx + dx[i];
                 int ny = cy + dy[i];
 
-                // 범위 체크 및 방문 체크
-                if (nx < 0 || nx >= n || ny < 0 || ny >= n || visited[nx][ny]) continue;
+                // 범위, 방문, 큰 물고기 체크
+                if (nx < 0 || nx >= n || ny < 0 || ny >= n || visited[nx][ny] || map[nx][ny] > babyShark.size) continue;
 
-                // 이동 가능한 칸 (빈 칸이거나 내 크기보다 작거나 같은 물고기)
-                if (map[nx][ny] == 0 || map[nx][ny] <= current.size) {
-                    visited[nx][ny] = true;
-                    queue.offer(new Shark(nx, ny, current.size, current.distance + 1, current.eaten));
-
-                    // 먹을 수 있는 물고기 (내 크기보다 작은 물고기)
-                    if (map[nx][ny] != 0 && map[nx][ny] < current.size) {
-                        int fishDistance = current.distance + 1;
-
-                        // 첫 번째 물고기 발견 시 거리 저장
-                        if (minFishDistance == -1) {
-                            minFishDistance = fishDistance;
-                        }
-
-                        // 같은 거리의 물고기 수집
-                        if (fishDistance == minFishDistance) {
-                            fishes.add(new Shark(nx, ny, current.size, fishDistance, current.eaten));
-                        }
-                    }
-
-                    // 더 먼 거리 탐색이 필요한 경우에만 큐에 추카
-                    if (minFishDistance == -1 || current.distance + 1 <= minFishDistance) {
-                        queue.offer(new Shark(nx, ny, current.size, current.distance + 1, current.eaten));
-                    }
-                }
-            }
-        }
-        return fishes;
-    }
-}
-
-
-// 기존 버전
-import java.io.*;
-import java.util.*;
-
-
-class Shark {
-    int x, y, size, distance, eaten;
-
-    public Shark() {
-
-    }
-    public Shark(int x, int y, int size, int distance, int eaten) {
-        this.x = x;
-        this.y = y;
-        this.size = size;
-        this.distance = distance;
-        this.eaten = eaten;
-    }
-}
-
-public class Main {
-
-    static int n;
-    static int[] dx = {0, 0, -1, 1};
-    static int[] dy = {1, -1, 0, 0};
-    static int[][] map;
-    static boolean[][] visited;
-    static Queue<Shark> queue = new LinkedList<>();;
-
-    public static void main(String[] args) throws IOException {
-        System.setIn(new FileInputStream("input.txt"));
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-        n = Integer.parseInt(br.readLine());
-        map = new int[n][n];
-        Shark shark = new Shark();
-
-        // 맵 입력 및 아기 상어 위치 찾기
-        for (int i = 0; i < n; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < n; j++) {
-                map[i][j] = Integer.parseInt(st.nextToken());
-                if (map[i][j] == 9) {
-                    map[i][j] = 0;  // 아기 상어 위치를 빈 칸으로 변경
-                    shark = new Shark(i, j, 2, 0, 0);  // 초기 크기 2 고정
-                }
+                visited[nx][ny] = true;
+                queue.offer(new int[] {nx, ny, distance + 1});
             }
         }
 
-        int totalTime = 0;
-        while (true) {
-
-            // 먹을 수 있는 물고기들 탐색 (BFS)
-            ArrayList<Shark> fishes = fishEatingCount(new ArrayList<>(), shark);
-
-            // 먹을 수 있는 물고기가 없으면 종료
-            if (fishes.isEmpty()) {
-                totalTime = shark.distance;
-                break;
-            }
-            // 물고기가 1마리인 경우
-            else if (fishes.size() == 1) {
-                shark = fishes.get(0);
-                shark = eatFish(shark);
-                map[shark.x][shark.y] = 0;
-            }
-            // 물고기가 여러 마리인 경우 - 거리, 위쪽, 왼쪽 우선순위로 선택
-            else {
-                shark = selectClosestFish(fishes);
-                shark = eatFish(shark);
-                map[shark.x][shark.y] = 0;
+        // 최단거리 물고기들만 반환
+        ArrayList<int[]> filteredFish = new ArrayList<>();
+        for (int[] fish : eatenFish) {
+            if (minDist == fish[2]) {
+                filteredFish.add(new int[] {fish[0], fish[1], minDist});
             }
         }
 
-        System.out.println(totalTime);
-    }
-
-    // 물고기 먹고 크기 증가 로직
-    static Shark eatFish(Shark shark) {
-        // 자기 크기만큼 먹으면 크기 증가
-        if (shark.size == shark.eaten + 1) {
-            return new Shark(shark.x, shark.y, shark.size + 1, shark.distance, 0);
-        } else {
-            return new Shark(shark.x, shark.y, shark.size, shark.distance, shark.eaten + 1);
-        }
-    }
-
-    // 가장 가까운 물고기 선택 (거리 -> 위쪽 -> 왼쪽 우선순위)
-    static Shark selectClosestFish(ArrayList<Shark> fishes) {
-        // 1. 가장 가까운 거리 찾기
-        int minDistance = Integer.MAX_VALUE;
-        for (Shark fish : fishes) {
-            minDistance = Math.min(minDistance, fish.distance);  // 제일 가까운 거리
-        }
-
-        // 2. 가장 가까운 거리의 물고기들만 필터링
-        ArrayList<Shark> closest = new ArrayList<>();
-        for (Shark fish : fishes) {
-            if (minDistance == fish.distance) {
-                closest.add(fish);
-            }
-        }
-
-        // 3. 여러 마리면 위쪽, 왼쪽 우선순위로 선택
-        if (closest.size() >= 2) {
-            // 가장 위쪽 행 찾기
-            int topRow = Integer.MAX_VALUE;
-            for (Shark fish : closest) {
-                topRow = Math.min(topRow, fish.x);
-            }
-
-            // 가장 위쪽 행에서 가장 왼쪽 열 찾기
-            int leftCol = Integer.MAX_VALUE;
-            for (Shark fish : closest) {
-                if (topRow == fish.x) {
-                    leftCol = Math.min(leftCol, fish.y);
-                }
-            }
-
-            // 최종 선택된 물고기 반환
-            for (Shark fish : closest) {
-                if (topRow == fish.x && leftCol == fish.y) {
-                    return fish;
-                }
-            }
-        }
-
-        // 가장 가까운 물고기가 한 마리라면
-        return closest.get(0);
-    }
-
-    // BFS로 먹을 수 있는 물고기들 찾기
-    static ArrayList<Shark> fishEatingCount(ArrayList<Shark> fishes, Shark start) {
-        queue.offer(start);
-        visited = new boolean[n][n];
-        visited[start.x][start.y] = true;
-
-        while (!queue.isEmpty()) {
-            Shark current = queue.poll();
-            int cx = current.x;
-            int cy = current.y;
-
-            for (int i = 0; i < 4; i++) {
-                int nx = cx + dx[i];
-                int ny = cy + dy[i];
-
-                // 범위 체크 및 방문 체크
-                if (nx < 0 || nx >= n || ny < 0 || ny >= n || visited[nx][ny]) continue;
-
-                // 이동 가능한 칸 (빈 칸이거나 내 크기보다 작거나 같은 물고기)
-                if (map[nx][ny] == 0 || map[nx][ny] <= current.size) {
-                    visited[nx][ny] = true;
-                    queue.offer(new Shark(nx, ny, current.size, current.distance + 1, current.eaten));
-
-                    // 먹을 수 있는 물고기 (내 크기보다 작은 물고기)
-                    if (map[nx][ny] != 0 && map[nx][ny] < current.size) {
-                        fishes.add(new Shark (nx, ny, current.size, current.distance + 1, current.eaten));
-                    }
-                }
-            }
-        }
-        return fishes;
+        return filteredFish;
     }
 }

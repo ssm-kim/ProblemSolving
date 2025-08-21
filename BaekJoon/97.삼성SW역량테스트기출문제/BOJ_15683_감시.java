@@ -81,7 +81,7 @@ public class Main {
         for (int[] dir : dirs) {
             ArrayList<int[]> path = spread(sx, sy, dir);  // 감시 시작 + 변경된 좌표 기록
             dfs(depth + 1);                               // 다음 CCTV 처리
-            recover(path);                                // 감시 해제 (백트래킹)
+            recover(path);                                // 감시 해제(백트래킹)
         }
     }
 

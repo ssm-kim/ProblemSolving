@@ -1,54 +1,61 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
+
+class Info {
+    int x, seconds;
+
+    public Info(int x, int seconds) {
+        this.x = x;
+        this.seconds = seconds;
+    }
+}
 
 public class Main {
 
-    static int N, K;
-    static int[] map = new int[100001];
+    static int n, k;
     static int[] dx = {1, -1, 2};
-    static int answer = 0;
+    static boolean[] visited = new boolean[100001];
 
     public static void main(String[] args) throws IOException {
         System.setIn(new FileInputStream("input.txt"));
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());
-        K = Integer.parseInt(st.nextToken());
 
-        map[N] = 1;  // 수빈이 위치
-        map[K] = 2;  // 동생 위치
+        n = Integer.parseInt(st.nextToken());
+        k = Integer.parseInt(st.nextToken());
 
-        bfs(N);
-        System.out.println(answer);
+        // 최단 거리
+        bfs();
     }
 
-    private static void bfs(int sx) {
-        LinkedList<int[]> queue = new LinkedList<>();
-        queue.offer(new int[] {sx, 0});  // [현재 위치, 소요 시간] 저장
-        map[sx] = 3;  // 시작 위치 방문 검사
+    static void bfs() {
+        Queue<Info> queue = new LinkedList<>();
+        queue.offer(new Info(n, 0));
+        visited[n] = true;  // 내 위치
 
-        int nx;
         while (!queue.isEmpty()) {
-            int[] pos = queue.poll();
-            int cx = pos[0];
-            int curTime = pos[1];
+            Info info = queue.poll();
+
+            // 만약 동생을 찾았다면 중지
+            if (info.x == k) {
+                System.out.println(info.seconds);
+                return;
+            }
 
             for (int i = 0; i < 3; i++) {
-                nx = (i == 2) ? cx * dx[i] : cx + dx[i];
+                // 순간이동 처리
+                int nx = (i == 2) ? (info.x * dx[i]) : (info.x + dx[i]);
 
-                if (nx < 0 || nx >= 100001) continue;  // 범위 검사
+                if (nx < 0 || nx >= 100001 || visited[nx]) continue;
 
-                if (map[nx] == 2) {
-                    answer = curTime + 1;
-                    return;
-                }  // 동생을 찾으면
-
-                if (map[nx] == 0) {
-                    map[nx] = 3;  // 방문 체크
-                    queue.offer(new int[] {nx, curTime + 1});
-                }  // 미방문 위치면 큐에 추가
+                visited[nx] = true;
+                queue.offer(new Info(nx, info.seconds + 1));
             }
         }
     }
 }
-

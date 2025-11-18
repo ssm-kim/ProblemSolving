@@ -2,101 +2,133 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.StringTokenizer;
 
 public class Solution {
-
-    static int K;
-    static LinkedList<Integer>[] magnetInfo = new LinkedList[6];
 
     public static void main(String[] args) throws IOException {
         System.setIn(new FileInputStream("input.txt"));
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
-        int T = Integer.parseInt(br.readLine());
 
-        for (int tc = 1; tc <= T; tc++) {
+        int TC = Integer.parseInt(br.readLine());
 
-            K = Integer.parseInt(br.readLine());  // 자석을 회전시키는 횟수
-            for (int i = 0; i <= 5; i++) magnetInfo[i] = new LinkedList<>();  // 덱 생성 (0번 인덱스 사용 안함)
-            for (int i = 1; i <= 4; i++) {
-                st = new StringTokenizer(br.readLine());
+        for (int t = 0; t < TC; t++) {
+            int k = Integer.parseInt(br.readLine());
+
+            // 자석 4개를 회전 가능한 덱으로 관리
+            LinkedList<Integer>[] magnet = new LinkedList[4];
+
+            for (int i = 0; i < 4; i++) {
+                magnet[i] = new LinkedList<>();
+                StringTokenizer st = new StringTokenizer(br.readLine());
                 for (int j = 0; j < 8; j++) {
-                    magnetInfo[i].offer(Integer.parseInt(st.nextToken()));
+                    magnet[i].offer(Integer.parseInt(st.nextToken()));
                 }
             }
 
-            for (int i = 0; i < K; i++) {
-                st = new StringTokenizer(br.readLine());
-                int start = Integer.parseInt(st.nextToken());   // 자석 번호
-                int direct = Integer.parseInt(st.nextToken());  // 회전 방향 1: 시계 방향, -1: 반시계 방향
-                rotateLogics(start, direct);
+            // K번 회전 수행
+            for (int i = 0; i < k; i++) {
+                StringTokenizer st = new StringTokenizer(br.readLine());
+                int number = Integer.parseInt(st.nextToken()) - 1;  // 0-based 인덱스
+                int direct = Integer.parseInt(st.nextToken());       // 1: 시계, -1: 반시계
+
+                // 연쇄 회전할 자석들 찾기
+                HashSet<int[]> target = simulate(number, direct, magnet);
+
+                // 실제 회전 수행
+                for (int[] info : target) {
+                    int num = info[0];
+                    int dir = info[1];
+
+                    if (dir == 1) {  // 시계 방향
+                        magnet[num].offerFirst(magnet[num].pollLast());
+                    } else {  // 반시계 방향
+                        magnet[num].offer(magnet[num].poll());
+                    }
+                }
             }
 
-            int answer = 0, score = 1;
-            for (int i = 1; i < magnetInfo.length - 1; i++) {
-                if (magnetInfo[i].get(0) == 1) {
-                    answer += score;
+            // 점수 계산
+            int score = 0;
+            for (int i = 0; i < 4; i++) {
+                if (magnet[i].get(0) == 1) {
+                    switch (i) {
+                        case 0: score += 1; break;
+                        case 1: score += 2; break;
+                        case 2: score += 4; break;
+                        case 3: score += 8; break;
+                    }
                 }
-                score *= 2;
             }
-            System.out.println("#" + tc + " " + answer);
+            System.out.println(String.format("#%d %d", (t + 1), score));
         }
     }
 
-    static void rotateLogics(int start, int direct) {
-        HashSet<Integer> process = new LinkedHashSet<>();
-        process.add(start);  // 현재 번호
+    static HashSet<int[]> simulate(int targetIdx, int direct, LinkedList<Integer>[] magnet) {
+        HashSet<int[]> set = new HashSet<>();
+        set.add(new int[] {targetIdx, direct});  // 본인은 무조건 회전
 
-        // 서로 맞닿아 있는 인덱스 2번, 6번 로직 처리
-        if (start == 1) {
-            for (int i = 1; i < 4; i++) {
-                if (magnetInfo[i].get(2) == magnetInfo[i + 1].get(6)) break;  // 서로 같으면 정지
-                process.add(i);
-                process.add(i + 1);
+        // 0번 자석: 오른쪽으로만 전파
+        if (targetIdx == 0) {
+            if (magnet[0].get(2) != magnet[1].get(6)) {  // 0번 오른쪽 vs 1번 왼쪽
+                set.add(new int[] {1, direct * -1});
+
+                if (magnet[1].get(2) != magnet[2].get(6)) {
+                    set.add(new int[] {2, direct});
+
+                    if (magnet[2].get(2) != magnet[3].get(6)) {
+                        set.add(new int[] {3, direct * -1});
+                    }
+                }
             }
-        }  // 왼쪽 끝일 때
-        else if (start == 4) {
-            for (int i = 4; i > 1; i--) {
-                if (magnetInfo[i].get(6) == magnetInfo[i - 1].get(2)) break;
-                process.add(i);
-                process.add(i - 1);
-            }
-        }  // 오른쪽 끝일 때
-        else {
-            for (int i = start; i < 4; i++) {
-                if (magnetInfo[i].get(2) == magnetInfo[i + 1].get(6)) break;
-                process.add(i);
-                process.add(i + 1);
-            }  // start 에서 오른쪽 탐색
-            for (int i = start; i > 1; i--) {
-                if (magnetInfo[i].get(6) == magnetInfo[i - 1].get(2)) break;
-                process.add(i);
-                process.add(i - 1);
-            }  // start 에서 왼쪽 탐색
-        }  // 중간 값 2 또는 3일 때
-
-        int[] dirs = new int[4];
-        dirs[start - 1] = direct;
-        int lt = start - 2, rt = start, dirCopy = direct;
-        while (lt >= 0 || rt <= 4) {
-            dirCopy *= -1;
-            if (0 <= lt && lt < 4) dirs[lt] = dirCopy;
-            if (0 <= rt && rt < 4) dirs[rt] = dirCopy;
-            lt--;
-            rt++;
-        }  // 방향 값 추출
-
-        Integer[] processArr = process.toArray(new Integer[0]);
-        for (int idx : processArr) {
-            int dir = dirs[idx - 1]; // 어느 방향으로 돌릴지 선택
-
-            if (dir == 1) {
-                magnetInfo[idx].addFirst(magnetInfo[idx].pollLast());
-            }  // 시계 방향
-            else {
-                magnetInfo[idx].addLast(magnetInfo[idx].pollFirst());
-            }  // 반시계 방향
         }
+        // 1번 자석: 양방향 전파
+        else if (targetIdx == 1) {
+            // 왼쪽 체크
+            if (magnet[1].get(6) != magnet[0].get(2)) {
+                set.add(new int[] {0, direct * -1});
+            }
+            // 오른쪽 체크
+            if (magnet[1].get(2) != magnet[2].get(6)) {
+                set.add(new int[] {2, direct * -1});
+
+                if (magnet[2].get(2) != magnet[3].get(6)) {
+                    set.add(new int[] {3, direct});
+                }
+            }
+        }
+        // 2번 자석: 양방향 전파
+        else if (targetIdx == 2) {
+            // 오른쪽 체크
+            if (magnet[2].get(2) != magnet[3].get(6)) {
+                set.add(new int[] {3, direct * -1});
+            }
+            // 왼쪽 체크
+            if (magnet[2].get(6) != magnet[1].get(2)) {
+                set.add(new int[] {1, direct * -1});
+
+                if (magnet[1].get(6) != magnet[0].get(2)) {
+                    set.add(new int[] {0, direct});
+                }
+            }
+        }
+        // 3번 자석: 왼쪽으로만 전파
+        else {
+            if (magnet[3].get(6) != magnet[2].get(2)) {
+                set.add(new int[] {2, direct * -1});
+
+                if (magnet[2].get(6) != magnet[1].get(2)) {
+                    set.add(new int[] {1, direct});
+
+                    if (magnet[1].get(6) != magnet[0].get(2)) {
+                        set.add(new int[] {0, direct * -1});
+                    }
+                }
+            }
+        }
+
+        return set;
     }
 }

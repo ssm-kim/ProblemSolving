@@ -1,91 +1,107 @@
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.*;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+
+class CCTV {
+    int x, y, number;
+
+    public CCTV(int x, int y, int number) {
+        this.x = x;
+        this.y = y;
+        this.number = number;
+    }
+}
 
 public class Main {
 
-    static int answer = Integer.MAX_VALUE;
-    static int N, M;
-    static int[][] map;
-    static int[] dx = {-1, 0, 1, 0};
+    static int n, m, answer;
+    static int[][] board;
+    static ArrayList<CCTV> cctvList = new ArrayList<>();
+    static int[] dx = {-1, 0, 1, 0};  // 북 동 남 서
     static int[] dy = {0, 1, 0, -1};
-    static ArrayList<int[]> cctvList = new ArrayList<>();
-    static int[][][] camDirections = {
-            {},
-            {{0}, {1}, {2}, {3}},                           // 1번 : 한 방향씩
-            {{0, 2}, {1, 3}},                               // 2번 : 서로 반대 방향
-            {{0, 1}, {1, 2}, {2, 3}, {3, 0}},               // 3번 : ㄱ자 방향
-            {{0, 1, 2}, {1, 2, 3}, {2, 3, 0}, {3, 0, 1}},   // 4번 : 세 방향
-            {{0, 1, 2, 3}}                                  // 5번 : 모든 방향
+    // CCTV 번호별 가능한 방향 조합
+    static int[][][] dirs = new int[][][] {
+        {{}},
+        {{0}, {1}, {2}, {3}},
+        {{1, 3}, {0, 2}},
+        {{0, 1}, {1, 2}, {2, 3}, {3, 0}},
+        {{3, 0, 1}, {0, 1, 2}, {1, 2, 3}, {2, 3, 0}},
+        {{0, 1, 2, 3}}
     };
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         System.setIn(new FileInputStream("input.txt"));
-
-        // 입력 받기
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
-        map = new int[N][M];
-        for (int i = 0; i < N; i++) {
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        board = new int[n][m];
+
+        for (int i = 0; i < n; i++) {
             st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < M; j++) {
-                map[i][j] = Integer.parseInt(st.nextToken());
-                if (map[i][j] != 0 && map[i][j] != 6) {
-                    cctvList.add(new int[]{i, j});
-                }  // 출발 지점 확인
+            for (int j = 0; j < m; j++) {
+                board[i][j] = Integer.parseInt(st.nextToken());
+                // CCTV 위치 저장
+                if (board[i][j] >= 1 && board[i][j] <= 5) {
+                    cctvList.add(new CCTV(i, j, board[i][j]));
+                }
             }
         }
 
-        dfs(0, map);
+        answer = Integer.MAX_VALUE;
+        dfs(0);
         System.out.println(answer);
     }
 
-    static void dfs(int depth, int[][] curMap) {
+    static void dfs(int depth) {
+        // 모든 CCTV의 방향을 정했으면 사각지대 계산
         if (depth == cctvList.size()) {
-            int cnt = 0;
-            for (int i = 0; i < N; i++) {
-                for (int j = 0; j < M; j++) {
-                    if (curMap[i][j] == 0) cnt++;
+            int invisibleCnt = 0;
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    if (board[i][j] == 0) invisibleCnt++;
                 }
             }
-            answer = Math.min(answer, cnt);
+            answer = Math.min(answer, invisibleCnt);
             return;
-        }  // 모든 CCTV 확인 완료
-
-        // 현재 CCTV 위치 및 타입
-        int[] pos = cctvList.get(depth);
-        int type = map[pos[0]][pos[1]];
-
-        // 해당 CCTV의 가능한 모든 방향 조합 시도
-        for (int[] dirs : camDirections[type]) {
-
-            int[][] copyMap = new int[N][M];
-            for (int i = 0; i < N; i++) {
-                copyMap[i] = curMap[i].clone();
-            }  // 맵 복사
-
-            // 각 방향으로 표시
-            for (int dir : dirs) {
-                int nx = pos[0];
-                int ny = pos[1];
-
-                while (true) {
-                    nx += dx[dir];
-                    ny += dy[dir];
-
-                    if (nx < 0 || nx >= N || ny < 0 || ny >= M) break;
-                    if (copyMap[nx][ny] == 6) break;
-
-                    // 빈칸이면 감시 영역 표시
-                    if (copyMap[nx][ny] == 0) copyMap[nx][ny] = -1;
-                }
-            }
-            // 다음 CCTV 확인
-            dfs(depth + 1, copyMap);
         }
+
+        // 현재 CCTV의 모든 가능한 방향 시도
+        CCTV current = cctvList.get(depth);
+        for (int[] dir : dirs[current.number]) {
+            ArrayList<int[]> observerPath = observer(dir, current);
+            dfs(depth + 1);
+            recovery(observerPath);  // 백트래킹
+        }
+    }
+
+    // 감시 영역 복구
+    static void recovery(ArrayList<int[]> observerPath) {
+        for (int[] path : observerPath) {
+            board[path[0]][path[1]] = 0;
+        }
+    }
+
+    // 주어진 방향으로 감시 영역 표시
+    static ArrayList<int[]> observer(int[] dir, CCTV current) {
+        ArrayList<int[]> path = new ArrayList<>();
+
+        for (int coordinateIdx : dir) {
+            int cx = current.x;
+            int cy = current.y;
+
+            // 각 방향으로 벽을 만날 때까지 진행
+            while (true) {
+                cx += dx[coordinateIdx];
+                cy += dy[coordinateIdx];
+
+                if (cx < 0 || cx >= n || cy < 0 || cy >= m || board[cx][cy] == 6) break;
+                if (board[cx][cy] >= 1 && board[cx][cy] <= 5) continue;  // CCTV는 통과
+
+                board[cx][cy] = current.number;
+                path.add(new int[] {cx, cy});
+            }
+        }
+        return path;
     }
 }

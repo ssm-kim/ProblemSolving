@@ -1,23 +1,19 @@
 import java.io.*;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.util.*;
 
 class Point {
-    int x, y, distance, isDestroy;
+    int x, y, skill, distance;
 
-    public Point(int x, int y, int distance, int isDestroy) {
+    public Point (int x, int y, int skill, int distance) {
         this.x = x;
         this.y = y;
+        this.skill = skill;
         this.distance = distance;
-        this.isDestroy = isDestroy;
     }
 }
-
 public class Main {
 
-    static int n, m, answer;
+    static int n, m;
     static int[] dx = {0, 0, -1, 1};
     static int[] dy = {1, -1, 0, 0};
     static int[][] board;
@@ -38,43 +34,43 @@ public class Main {
             }
         }
 
-        visited = new boolean[n][m][2];
-        answer = -1;
-        bfs(0, 0);
-        System.out.println(answer);
+        visited = new boolean[2][n][m];
+        System.out.println(bfs());
     }
 
-    static void bfs(int sx, int sy) {
+    static int bfs() {
         Queue<Point> queue = new LinkedList<>();
-        queue.offer(new Point(sx, sy, 1, 0));
-        visited[sx][sy][0] = true;  // 벽 안 부순 상태로 시작
+        queue.offer(new Point(0, 0, 0, 1));
+        visited[0][0][0] = true;
 
         while (!queue.isEmpty()) {
             Point p = queue.poll();
-
-            // 목적지 도착 시 최단 거리 반환
-            if (p.x == n - 1 && p.y == m - 1) {
-                answer = p.distance;
-                break;
-            }
+            if (p.x == n - 1 && p.y == m - 1) return p.distance;
 
             for (int i = 0; i < 4; i++) {
                 int nx = p.x + dx[i];
                 int ny = p.y + dy[i];
 
-                if (nx < 0 || nx >= n || ny < 0 || ny >= m || visited[nx][ny][p.isDestroy]) continue;
+                if (nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
+                if (visited[p.skill][nx][ny]) continue;
 
-                // 빈 칸 이동 - 현재 상태 유지
-                if (board[nx][ny] == 0) {
-                    visited[nx][ny][p.isDestroy] = true;
-                    queue.offer(new Point(nx, ny, p.distance + 1, p.isDestroy));
+                if (p.skill == 0) {  // 아직 벽 안 부순 상태
+                    if (board[nx][ny] == 1) {  // 벽 → 부수고 스킬=1로 전환
+                        visited[1][nx][ny] = true;
+                        queue.offer(new Point(nx, ny, 1, p.distance + 1));
+                    } else {  // 빈 칸 → 그대로 이동
+                        visited[0][nx][ny] = true;
+                        queue.offer(new Point(nx, ny, 0, p.distance + 1));
+                    }
                 }
-                // 벽 부수기 - 상태 변경 (0 → 1)
-                else if (board[nx][ny] == 1 && p.isDestroy == 0) {
-                    visited[nx][ny][1] = true;
-                    queue.offer(new Point(nx, ny, p.distance + 1, 1));
+                else {  // 이미 벽 부순 상태 → 빈 칸만 이동 가능
+                    if (board[nx][ny] == 0) {
+                        visited[1][nx][ny] = true;
+                        queue.offer(new Point(nx, ny, 1, p.distance + 1));
+                    }
                 }
             }
         }
+        return -1;
     }
 }

@@ -1,77 +1,71 @@
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
+
+class Node {
+    int x, y, meltCnt;
+
+    public Node(int x, int y, int meltCnt) {
+        this.x = x;
+        this.y = y;
+        this.meltCnt = meltCnt;
+    }
+}
 
 public class Main {
 
     static int n, m;
     static int[] dx = {0, 0, -1, 1};
     static int[] dy = {1, -1, 0, 0};
+    static ArrayList<Node> iceMountain;
     static int[][] board;
-    static boolean[][] visited;
 
     public static void main(String[] args) throws IOException {
         System.setIn(new FileInputStream("input.txt"));
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
         StringTokenizer st = new StringTokenizer(br.readLine());
+
         n = Integer.parseInt(st.nextToken());
         m = Integer.parseInt(st.nextToken());
         board = new int[n][m];
+        iceMountain = new ArrayList<>();
 
-        // 초기 빙산 좌표들 저장
-        ArrayList<int[]> target = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             st = new StringTokenizer(br.readLine());
             for (int j = 0; j < m; j++) {
                 board[i][j] = Integer.parseInt(st.nextToken());
                 if (board[i][j] != 0) {
-                    target.add(new int[] {i, j});
+                    iceMountain.add(new Node (i, j, 0));
                 }
             }
         }
 
         int year = 0;
-        while (true) {
-            // 1. 녹을 양 계산 (동시에 녹이기 위해 미리 계산)
-            ArrayList<int[]> path = meltingCheck(target);
+        boolean isSeparate = false;
+        while (!iceMountain.isEmpty()) {
 
-            // 2. 한번에 빙산 녹이기
-            melting(path);
+            // 녹일 빙산 갯수 구한 후 한번에 녹이기
+            melting();
 
-            year++; // 1년 경과
-
-            // 3. 연결요소 개수 확인 (빙산이 몇 덩어리로 분리되었는지)
-            visited = new boolean[n][m];
-            int islandCnt = 0;
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    if (board[i][j] != 0 && !visited[i][j]) {
-                        dfs(i, j);
-                        islandCnt++;
-                    }
+            // 빙산들이 서로 갈라졌는지 확인
+            boolean[][] visited = new boolean[n][m];
+            int cnt = 0;
+            for (Node cur : iceMountain) {
+                if (!visited[cur.x][cur.y]) {
+                    dfs(cur.x, cur.y, visited);
+                    cnt++;
                 }
             }
 
-            // 4. 종료 조건 체크
-            if (islandCnt == 0) {        // 모든 빙산 녹음
-                year = 0;
-                break;
-            } else if (islandCnt >= 2) { // 2덩어리 이상 분리
-                break;
+            year++;
+            if (cnt >= 2) {
+                System.out.println(year);
+                return;
             }
         }
-        System.out.println(year);
+        System.out.println(0);
     }
 
-    // 연결된 빙산들 탐색
-    static void dfs(int cx, int cy) {
+    static void dfs(int cx, int cy, boolean[][] visited) {
         visited[cx][cy] = true;
 
         for (int i = 0; i < 4; i++) {
@@ -80,44 +74,32 @@ public class Main {
 
             if (nx < 0 || nx >= n || ny < 0 || ny >= m || visited[nx][ny]) continue;
 
-            if (board[nx][ny] != 0) { // 빙산이면 계속 탐색
-                dfs(nx, ny);
+            if (board[nx][ny] > 0) {
+                dfs(nx, ny, visited);
             }
         }
     }
 
-    // 실제 빙산 녹이기
-    static void melting(ArrayList<int[]> path) {
-        for (int[] pos : path) {
-            int cx = pos[0];
-            int cy = pos[1];
-            int meltCnt = pos[2];
-
-            // 0 이하로는 안 내려감
-            board[cx][cy] = Math.max(board[cx][cy] - meltCnt, 0);
-        }
-    }
-
-    // 각 빙산이 얼마나 녹을지 계산
-    static ArrayList<int[]> meltingCheck(ArrayList<int[]> target) {
-        ArrayList<int[]> info = new ArrayList<>();
-
-        for (int[] pos : target) {
-            int cx = pos[0];
-            int cy = pos[1];
-
-            // 4방향 바다 개수만큼 녹음
-            int heightCnt = 0;
+    static void melting() {
+        // 1단계: 각 빙산의 인접 바다 수 계산 (동시에 녹여야 하므로 먼저 전부 계산)
+        for (Node cur : iceMountain) {
             for (int i = 0; i < 4; i++) {
-                int nx = cx + dx[i];
-                int ny = cy + dy[i];
-
-                if (nx < 0 || nx >= n || ny < 0 || ny >= m || board[nx][ny] != 0) continue;
-
-                heightCnt++; // 바다 발견시 녹을 양 증가
+                int nx = cur.x + dx[i];
+                int ny = cur.y + dy[i];
+                if (nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
+                if (board[nx][ny] == 0) cur.meltCnt++;
             }
-            info.add(new int[] {cx, cy, heightCnt});
         }
-        return info;
+
+        // 2단계: 한번에 녹이고, 살아있는 빙산만 다음 리스트에 추가
+        ArrayList<Node> nextTarget = new ArrayList<>();
+        for (Node cur : iceMountain) {
+            board[cur.x][cur.y] = Math.max(board[cur.x][cur.y] - cur.meltCnt, 0);
+            if (board[cur.x][cur.y] > 0) {
+                cur.meltCnt = 0;  // 다음 턴을 위해 초기화
+                nextTarget.add(cur);
+            }
+        }
+        iceMountain = nextTarget;
     }
 }
